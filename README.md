@@ -1,129 +1,274 @@
-# Toolixa Agents
+<div align="center">
+  <img src="assets/readme-hero.svg" alt="Toolixa Agents — a local-first ecosystem for modular AI agents" width="100%" />
 
-**A modular, local-first ecosystem of developer-operated AI agents.**
+  <p><strong>Build, connect and operate modular AI agents with your own models, tools and runtime.</strong></p>
 
-**Live directory:** https://toolixa-agents.vercel.app
+  <p>
+    <a href="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/ci.yml"><img src="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/ci.yml/badge.svg?branch=feature%2Fpython-local-ai-gateway" alt="CI status" /></a>
+    <a href="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/security.yml"><img src="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/security.yml/badge.svg?branch=feature%2Fpython-local-ai-gateway" alt="Dependency security status" /></a>
+    <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python 3.11+" />
+    <img src="https://img.shields.io/badge/Architecture-Local--first-16A085" alt="Local-first architecture" />
+    <img src="https://img.shields.io/badge/Stage-Experimental%20Alpha-orange" alt="Experimental alpha" />
+    <img src="https://img.shields.io/badge/License-Not%20selected-lightgrey" alt="No license selected" />
+  </p>
 
-Toolixa is growing from an agent catalog into a local-first AI gateway and agent runtime. Bring your own runtime (BYOR), bring your own provider credentials (BYOK), and keep execution under your control.
+  <p>
+    <a href="https://toolixa-agents.vercel.app/">Live Agent Directory</a> ·
+    <a href="#architecture">Architecture</a> ·
+    <a href="#quick-start">Quick start</a> ·
+    <a href="docs/gateway-guide.md">Gateway guide</a> ·
+    <a href="#roadmap">Roadmap</a>
+  </p>
+</div>
 
-## What exists today
+---
 
-| Component | Purpose | Status |
-|---|---|---|
-| Static Agent Directory | Browse six documented starter agents | Deployed |
-| `toolixa-core` | Shared Python contracts, budgets, policies, tools, memory interfaces | Experimental foundation |
-| Local AI Gateway | Browser dashboard, encrypted provider credentials, OpenAI-compatible local API | Experimental alpha |
-| Six starter agents | Bounded local examples; see each README for exact behavior | Experimental |
+## Project at a glance
 
-### Starter agents
+Toolixa Agents is evolving from a static agent directory and Python starter SDK into a **local-first AI gateway and agent runtime**. You bring the provider accounts, API credentials and machine or server that runs the agents. Toolixa provides the modular contracts and control layers.
 
-| Agent | Purpose |
+| Principle | What it means |
 |---|---|
-| Dev Copilot | Read-only workspace analysis and codebase inventory |
-| Aegis Security | Local passive source and secret-pattern checks |
-| Task Orchestrator | Bounded task dependency planning |
-| RAG Chatbot | Local text retrieval with file and line citations |
-| Content Maestro | Evidence-aware content brief and editorial outline |
-| Web Scraper | Parse supplied local HTML into structured metadata |
+| **BYOK** | Use API keys and accounts from providers you choose |
+| **BYOR** | Run the gateway and agents in an environment you control |
+| **Python-first** | Agent logic, gateway, orchestration and policy are Python |
+| **Modular** | Providers, tools, memory and agents are separate integration surfaces |
+| **Deny by default** | Declared capabilities do not automatically grant permissions |
 
-The directory catalog is generated from each agent's `agent.json` manifest.
+## Current project status
 
-## Local AI Gateway (experimental)
+<div align="center">
+  <h3>EXPERIMENTAL ALPHA · PHASE 1</h3>
+  <p><strong>Local AI Gateway implemented · GitHub checks passing · independent security review pending</strong></p>
+</div>
 
-The gateway adds a local browser dashboard and a compatible API endpoint. It can connect to **any provider endpoint that implements the OpenAI Chat Completions-compatible API**, including cloud gateways, OpenRouter-compatible endpoints, Ollama's OpenAI-compatible endpoint, vLLM, LM Studio, and custom compatible servers.
+**Important release distinction:** the six-agent foundation and static directory are on `main`. The Local AI Gateway implementation is currently on the Draft [Pull Request #1](https://github.com/tasnimamin38/toolixa-agents/pull/1), branch `feature/python-local-ai-gateway`. It has passed Windows/Python 3.11 checks and the GitHub CI and dependency-audit workflows, but it has not yet been merged into `main` or deployed as a hosted backend.
 
-It is not yet a universal adapter for every proprietary API protocol. Native Anthropic, Gemini, MCP client/tool execution, OAuth provider sign-in, and agent-runtime orchestration are planned as separate integrations.
+| Area | Current state |
+|---|---|
+| Static Agent Directory | Deployed on Vercel |
+| Python core contracts and safety primitives | Experimental foundation on `main` |
+| Six bounded starter agents | Experimental on `main` |
+| Local browser-based AI Gateway | Implemented on Draft PR #1 |
+| OpenAI Chat Completions-compatible provider routing | Implemented on Draft PR #1 |
+| Native vendor protocols and MCP tool execution | Planned — Phase 2 |
+| Real multi-agent runtime and isolated execution | Planned — Phase 3 |
+| Production hardening and hosted multi-user SaaS | Not started — later phases |
 
-### Install and run on Windows PowerShell
+This is **not production-ready software**. The gateway is a single-user, loopback-only local alpha. Do not expose it to the public internet or use it as an unreviewed executor for untrusted code.
+
+## What is included
+
+<table>
+  <tr>
+    <td width="33%" valign="top">
+      <h3>01 · Agent SDK</h3>
+      Shared Python contracts, request/result models, execution budgets, provider and tool interfaces, policy checks and memory abstractions.
+    </td>
+    <td width="33%" valign="top">
+      <h3>02 · Local AI Gateway</h3>
+      Browser dashboard, encrypted local provider credentials, model discovery, chat playground and a compatible local API.
+    </td>
+    <td width="33%" valign="top">
+      <h3>03 · Safety primitives</h3>
+      Deny-by-default permissions, one-time approvals, secret redaction and a disabled-by-default process executor.
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <h3>04 · Starter agents</h3>
+      Six separately documented Python agents with bounded, inspectable behavior.
+    </td>
+    <td valign="top">
+      <h3>05 · Provider flexibility</h3>
+      Connect any trusted upstream that implements the supported OpenAI Chat Completions-compatible API surface.
+    </td>
+    <td valign="top">
+      <h3>06 · Quality gates</h3>
+      Automated tests, Ruff, compile checks, catalog validation and dependency auditing in GitHub Actions.
+    </td>
+  </tr>
+</table>
+
+## Agent directory
+
+| Agent | Current capability | Important boundary |
+|---|---|---|
+| **Dev Copilot** | Read-only Python workspace inspection and AST analysis | Does not execute or modify code |
+| **Aegis Security** | Passive local secret-pattern and risky-code checks | Not an active scanner or penetration tester |
+| **Task Orchestrator** | Deterministic task dependency ordering | Does not launch autonomous sub-agents |
+| **RAG Chatbot** | Local Markdown/text retrieval with source line ranges | Lexical retrieval, not vector/embedding search |
+| **Content Maestro** | Structured editorial brief and research checklist | Does not perform live web research |
+| **Web Scraper** | Parse supplied local HTML into metadata, headings and links | No remote crawling or arbitrary HTTP fetching |
+
+Browse the [live directory](https://toolixa-agents.vercel.app/) or inspect each agent under `agents/`.
+
+## Architecture
+
+The diagram shows the current local gateway boundary. The agent runtime and MCP tool bridge are future integrations, not completed components.
+
+```mermaid
+flowchart LR
+    subgraph LOCAL["Your computer · Python runtime"]
+      UI["Browser dashboard"]
+      API["Toolixa Gateway API"]
+      VAULT[("Encrypted local vault")]
+      DB[("Local SQLite")]
+      UI --> API
+      API <--> DB
+      DB --> VAULT
+    end
+
+    CLIENT["OpenAI-compatible client"] -->|"Bearer Toolixa key"| API
+    API --> ROUTER["Provider HTTP adapter"]
+    ROUTER --> MODEL["Your configured model endpoint"]
+
+    AGENT["Six bounded starter agents"] -. "future model wiring" .-> API
+    MCP["MCP servers and tools"] -. "Phase 2" .-> API
+```
+
+### Local gateway request flow
+
+1. Start the gateway from PowerShell.
+2. Open the local dashboard in your browser.
+3. Add a provider name, API base URL and provider credential.
+4. Test the connection and discover available models.
+5. Use the playground or create a Toolixa API key.
+6. Connect a compatible client to the local `/v1` endpoint.
+
+## Provider compatibility
+
+The current gateway adapter supports the **OpenAI Chat Completions-compatible** model listing, JSON chat and streaming chat surface. This is a compatibility boundary, not a claim that every vendor-native API is already implemented.
+
+| Provider or runtime | Connection approach |
+|---|---|
+| OpenRouter | OpenAI-compatible API endpoint |
+| Ollama | Its OpenAI-compatible local endpoint |
+| LM Studio | Its local OpenAI-compatible server |
+| vLLM | Its OpenAI-compatible server |
+| Other gateways and hosted/local models | Any trusted endpoint implementing the supported routes |
+| Native Anthropic / Gemini APIs | Planned dedicated adapters |
+| MCP servers | Planned Python MCP client and permission-aware tool bridge |
+
+See [Provider and Gateway setup](docs/gateway-guide.md) for endpoint requirements and limitations.
+
+## Quick start
+
+### 1. Install the core SDK
 
 Requirements: Python 3.11+ and Git.
 
 ```powershell
 git clone https://github.com/tasnimamin38/toolixa-agents.git
 cd toolixa-agents
+
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+
+python -m pip install --upgrade pip
+python -m pip install -e ./core
+```
+
+### 2. Run a bounded starter agent
+
+For example, the read-only Dev Copilot:
+
+```powershell
+cd agents/01-dev-copilot
+python main.py --workspace C:\path\to\your\project
+```
+
+Each agent has its own README, manifest and dependency file. Review its exact scope before running it.
+
+### 3. Run the Local AI Gateway
+
+The gateway is currently available on [Draft PR #1](https://github.com/tasnimamin38/toolixa-agents/pull/1), not on the default `main` branch yet. To try that version, clone the feature branch:
+
+```powershell
+git clone --branch feature/python-local-ai-gateway https://github.com/tasnimamin38/toolixa-agents.git
+cd toolixa-agents
+
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
 python -m pip install --upgrade pip
 python -m pip install -e ".\core[gateway]"
 python -m toolixa_core.gateway
 ```
 
-The command prints a one-time dashboard password and opens the browser. Open `http://127.0.0.1:20128` if it does not open automatically. The compatible API base is `http://127.0.0.1:20128/v1`.
+The terminal prints a one-time dashboard password. Open `http://127.0.0.1:20128` in your browser. The compatible API base is `http://127.0.0.1:20128/v1`.
 
-1. Sign in with the first-run password shown in the terminal.
-2. Add a provider name, its OpenAI-compatible API base URL, and its API key.
-3. Use **Test connection** to discover models.
-4. Try a model in the dashboard playground.
-5. Create a Toolixa gateway API key and copy it immediately; the raw key is not shown again.
-6. Connect a compatible client to the local `/v1` API. Use a model ID such as `provider-id/model-id`.
+The gateway binds to loopback only. **Do not port-forward, tunnel or reverse-proxy this experimental service to the public internet.**
 
-The dashboard only binds to `127.0.0.1`. Do not expose it through a public tunnel, reverse proxy, router port-forward, or a public server. Press `Ctrl+C` to stop it.
+## Security and credential handling
 
-### Credential handling
+- Provider API keys are encrypted in the local SQLite store. The vault key is kept separately in the user's application-data directory.
+- Toolixa API keys are displayed once and stored as hashes.
+- The dashboard is protected by a local password and a signed session cookie.
+- The local gateway rejects non-loopback plaintext HTTP endpoints and does not follow provider redirects.
+- No real provider key or paid model request is required for installation or automated tests.
+- The gateway has not yet completed an independent penetration test or full production web-security review.
+- A configured provider receives the prompts and conversation data sent to it. Review that provider's privacy, retention and billing terms.
 
-Provider keys are encrypted in the local SQLite store using a Fernet key held separately from the repository under the current user's application-data directory. Toolixa API keys are displayed once and stored as hashes. This protects a database-only copy from revealing provider keys; it does not protect against malware or an attacker who can read both the local vault and its key. Never commit, paste into chat, or share real credentials.
+Read the [Security Model](docs/security-model.md) before connecting credentials or enabling any additional capabilities.
 
-### What this gateway does not do yet
+## Roadmap
 
-- It does not call a paid provider during installation or tests.
-- It does not run agent code, shell commands, browser automation, or MCP tools.
-- It does not implement native adapters for every vendor API.
-- It is single-user and local-only, not a remote multi-tenant SaaS service.
-- It does not provide production-grade rate limits, audit controls, remote secret management, or high availability.
+| Phase | Objective | Status |
+|---|---|---|
+| **0 · Foundation** | Python core, six bounded starter agents, static directory, CI | <strong>Completed</strong> |
+| **1 · Local Gateway** | Browser dashboard, encrypted BYOK store, compatible provider API | <strong>Implemented on Draft PR #1; review pending</strong> |
+| **2 · Native AI + MCP** | Native provider adapters, MCP registration/discovery, permission-gated tool calls | Planned |
+| **3 · Agent Runtime** | Per-agent model selection, multi-agent orchestration, persistent memory, isolated tools | Planned |
+| **4 · Production Gate** | Threat-model review, penetration testing, rate limits, audit, egress and operational controls | Not started |
+| **5 · Hosted Service** | Optional multi-user SaaS, tenant isolation, remote secrets, quotas and billing | Not started |
 
-See [the gateway guide](docs/gateway-guide.md) for supported endpoint formats, API usage, storage paths, and limitations.
+### When does Experimental end?
 
-## Design principles
+Experimental status does not end just because the dashboard or API exists. The project moves out of experimental only after the agents perform their documented jobs reliably, provider and MCP integrations pass adversarial testing, tool execution is isolated, credentials and tenants are protected, and an independent security review plus release acceptance tests are complete.
 
-- BYOR and BYOK are separate: Toolixa does not provide a hosted execution runtime.
-- The core SDK has no mandatory third-party runtime dependencies; the local gateway is an optional extra.
-- Agent dependencies are isolated; installing one agent does not require all other agents.
-- Permissions are explicit, deny by default, and do not come from the agent manifest.
-- Arbitrary shell execution and active security testing are disabled by default.
-- The agent logic, gateway, and server are Python. The dashboard is server-rendered HTML/CSS; no Node, Go, or Rust runtime is required.
+Until those conditions are met, the honest status remains **Experimental Alpha**.
 
-## Development quick start
+## Development and verification
+
+From the repository root, install the optional gateway and development tools:
 
 ```powershell
 python -m pip install -e "./core[gateway]"
 python -m pip install -r agents/06-web-scraper/requirements.txt
 python -m pip install "pytest>=9.0.3,<10" "ruff>=0.8,<1"
-python scripts/build_catalog.py --check
+
 python -m compileall -q core/src agents scripts tests
 ruff check core/src agents scripts tests
 ruff format --check core/src agents scripts tests
+python scripts/build_catalog.py --check
 python -m pytest -q
 ```
 
-## Project status and roadmap
-
-This is an experimental local alpha, not a production-ready autonomous-agent platform.
-
-1. **Local gateway foundation:** provider registry, local dashboard, encrypted BYOK storage, compatible model discovery, chat and stream proxy.
-2. **Native AI and MCP integration:** native vendor adapters, MCP client/server registration and tool invocation, per-agent model selection, and real orchestration.
-3. **Agent runtime:** permission-aware tool execution, workspace isolation, bounded process/container executor, browser tools, and source-aware vector memory.
-4. **Production hardening:** threat-model review, CSRF/rate-limit hardening, observability, backup/recovery, signed audit events, supply-chain controls, and security testing.
-5. **Optional hosted multi-user service:** tenant isolation, identity, KMS/secret manager, quotas, billing, operations and incident response.
-
-A phase is complete only after automated tests, security review, and documented acceptance criteria pass. The static Vercel directory is not the Python gateway backend.
-
-## Security
-
-Do not run an agent with permissions you have not reviewed. Use test workspaces and synthetic data first. Never commit API keys, tokens, cookies, private keys, real environment files, or sensitive customer data.
-
-Report security issues privately to the repository owner rather than publishing exploit details.
-
-## License status
-
-No license has been selected. Public visibility does not itself grant permission to reuse, modify, or redistribute this repository. Licensing is intentionally on hold at the owner's direction.
+The Local AI Gateway tests use mocked upstream responses. They do not call paid provider APIs.
 
 ## Documentation
 
-- Architecture: docs/architecture.md
-- Security model: docs/security-model.md
-- Gateway setup and API: docs/gateway-guide.md
-- BYOR guide: docs/byor-guide.md
-- Installation: docs/installation.md
-- Development: docs/development.md
-- Approved design specification: docs/specs/2026-11-27-toolixa-agents-design.md
-- Implementation plan: docs/plans/2026-11-27-toolixa-agents-implementation.md
+| Document | What it covers |
+|---|---|
+| [Architecture](docs/architecture.md) | Components, boundaries and data flow |
+| [Security Model](docs/security-model.md) | Permissions, secrets, execution and threats |
+| [Gateway Guide](docs/gateway-guide.md) | Local dashboard, providers and compatible API |
+| [BYOR / BYOK Guide](docs/byor-guide.md) | Runtime and credentials ownership |
+| [Installation](docs/installation.md) | Install and launch |
+| [Development](docs/development.md) | Tests, lint, CI and contribution workflow |
+| [Implementation Plan](docs/plans/2026-11-27-toolixa-agents-implementation.md) | Phase-by-phase acceptance gates |
+
+## License
+
+No license has been selected. Public visibility on GitHub does not grant permission to reuse, modify or redistribute this project. Do not assume an open-source license applies.
+
+---
+
+<div align="center">
+  <strong>Toolixa Agents</strong><br/>
+  <sub>Local-first · Python-first · Your models · Your runtime · Your control</sub><br/><br/>
+  <a href="https://github.com/tasnimamin38/toolixa-agents">Repository</a> ·
+  <a href="https://toolixa-agents.vercel.app/">Agent Directory</a> ·
+  <a href="https://github.com/tasnimamin38/toolixa-agents/pulls">Pull requests</a>
+</div>
