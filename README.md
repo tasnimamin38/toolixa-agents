@@ -4,8 +4,8 @@
   <p><strong>Build, connect and operate modular AI agents with your own models, tools and runtime.</strong></p>
 
   <p>
-    <a href="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/ci.yml"><img src="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status" /></a>
-    <a href="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/security.yml"><img src="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/security.yml/badge.svg?branch=main" alt="Dependency security status" /></a>
+    <a href="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/ci.yml"><img src="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/ci.yml/badge.svg?branch=feature%2Fpython-local-ai-gateway" alt="CI status" /></a>
+    <a href="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/security.yml"><img src="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/security.yml/badge.svg?branch=feature%2Fpython-local-ai-gateway" alt="Dependency security status" /></a>
     <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python 3.11+" />
     <img src="https://img.shields.io/badge/Architecture-Local--first-16A085" alt="Local-first architecture" />
     <img src="https://img.shields.io/badge/Stage-Experimental-orange" alt="Experimental alpha" />
@@ -42,7 +42,7 @@ Toolixa Agents is evolving from a static agent directory and Python starter SDK 
   <p><strong>Bounded tool-calling runtime · 12 agents · automated checks passing · independent security review pending</strong></p>
 </div>
 
-**Important release distinction:** the original six-agent foundation and static directory are on `main`. The Local AI Gateway, shared model-driven tool runtime and six advanced specialists are in Draft [Pull Request #1](https://github.com/tasnimamin38/toolixa-agents/pull/1), branch `feature/python-local-ai-gateway`. The branch has passed local Windows/Python 3.11 regression checks and GitHub CI/dependency audit on earlier commits; this latest specialist update is awaiting fresh CI. None of these branch features has been merged into `main` or deployed as a hosted backend.
+**Important release distinction:** the original six-agent foundation and static directory are on `main`. The Local AI Gateway, shared model-driven tool runtime and six advanced specialists are in Draft [Pull Request #1](https://github.com/tasnimamin38/toolixa-agents/pull/1), branch `feature/python-local-ai-gateway`. The latest branch commit `bf23ce7` has passed local Windows/Python 3.11 regression checks, GitHub CI and Dependency Security workflows. Independent security review remains pending. None of these branch features has been merged into `main` or deployed as a hosted backend.
 
 | Area | Current state |
 |---|---|
