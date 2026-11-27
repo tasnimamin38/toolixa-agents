@@ -76,6 +76,7 @@
 - [x] Add an advanced runtime design specification and this implementation plan.
 - [x] Update CI and dependency security workflows to install `[gateway,runtime]`.
 - [x] Regenerate catalogue and verify twelve manifests and valid entrypoints/docs.
+- [x] Use exact uppercase README.md paths in all six specialist manifests and folders; Linux GitHub runner validation exposed the case-sensitive path mismatch that Windows does not expose.
 - [x] Run full local Windows/Python 3.11 checks: Ruff check/format, compileall, catalogue validation and pytest.
 
 ## Local verification evidence
