@@ -38,9 +38,19 @@ def build_catalog(root: Path = ROOT) -> dict[str, Any]:
         if not isinstance(manifest, dict):
             raise ValueError(f"{manifest_path}: manifest must be a JSON object")
         required = {
-            "schema_version", "id", "name", "version", "category", "description",
-            "entrypoint", "python", "dependencies", "capabilities", "permissions",
-            "status", "documentation",
+            "schema_version",
+            "id",
+            "name",
+            "version",
+            "category",
+            "description",
+            "entrypoint",
+            "python",
+            "dependencies",
+            "capabilities",
+            "permissions",
+            "status",
+            "documentation",
         }
         missing = sorted(required - manifest.keys())
         if missing:
@@ -60,7 +70,9 @@ def build_catalog(root: Path = ROOT) -> dict[str, Any]:
                 raise ValueError(f"{manifest_path}: {field} must be a list of strings")
         unknown_permissions = sorted(set(manifest["permissions"]) - VALID_PERMISSIONS)
         if unknown_permissions:
-            raise ValueError(f"{manifest_path}: unknown permissions: {', '.join(unknown_permissions)}")
+            raise ValueError(
+                f"{manifest_path}: unknown permissions: {', '.join(unknown_permissions)}"
+            )
 
         for field in ("entrypoint", "documentation"):
             relative = Path(manifest[field])
@@ -104,7 +116,9 @@ def catalog_text(root: Path = ROOT) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true", help="Fail if the committed catalog is stale")
+    parser.add_argument(
+        "--check", action="store_true", help="Fail if the committed catalog is stale"
+    )
     args = parser.parse_args()
     output_path = ROOT / OUTPUT
     expected = catalog_text()

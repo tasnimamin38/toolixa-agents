@@ -30,7 +30,9 @@ class ToolRegistry:
             raise KeyError(f"unknown tool: {name}")
         tool = self._tools[name]
         for permission in tool.spec.required_permissions:
-            target = context.workspace if permission in {"workspace.read", "workspace.write"} else None
+            target = (
+                context.workspace if permission in {"workspace.read", "workspace.write"} else None
+            )
             decision = context.policy.decide(permission, target=target)
             if not decision.allowed:
                 raise PermissionDenied(decision.reason)

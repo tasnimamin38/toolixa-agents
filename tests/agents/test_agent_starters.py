@@ -29,9 +29,7 @@ def test_dev_copilot_reports_python_syntax_errors(tmp_path: Path):
 
 def test_aegis_reports_secret_without_leaking_value():
     secret = "sk_live_abcdefghijklmnop1234"
-    findings = load_agent("02-aegis-security").scan_text(
-        f'API_KEY = "{secret}"\n', "settings.py"
-    )
+    findings = load_agent("02-aegis-security").scan_text(f'API_KEY = "{secret}"\n', "settings.py")
     assert findings
     assert findings[0]["rule"] == "POSSIBLE_HARDCODED_SECRET"
     assert secret not in json.dumps(findings)
@@ -46,9 +44,7 @@ def test_orchestrator_orders_dependencies_and_rejects_cycles():
     ]
     assert agent.order_tasks(tasks) == ["design", "build", "test"]
     with __import__("pytest").raises(ValueError, match="cycle"):
-        agent.order_tasks(
-            [{"id": "a", "depends_on": ["b"]}, {"id": "b", "depends_on": ["a"]}]
-        )
+        agent.order_tasks([{"id": "a", "depends_on": ["b"]}, {"id": "b", "depends_on": ["a"]}])
 
 
 def test_rag_retrieval_returns_source_ranges():
@@ -74,9 +70,7 @@ def test_web_scraper_parses_local_html_only():
     <body><h1>Hello</h1><a href="/guide">Guide</a>
     <a href="javascript:alert(1)">bad</a></body></html>
     """
-    result = load_agent("06-web-scraper").extract_html(
-        html, base_url="https://example.org/page"
-    )
+    result = load_agent("06-web-scraper").extract_html(html, base_url="https://example.org/page")
     assert result["title"] == "Example"
     assert result["description"] == "A sample page"
     assert result["links"] == [{"text": "Guide", "href": "https://example.org/guide"}]

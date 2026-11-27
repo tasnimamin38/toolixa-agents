@@ -28,8 +28,7 @@ class ExecutionResult:
 
 
 class Executor(Protocol):
-    def execute(self, request: ExecutionRequest) -> ExecutionResult:
-        ...
+    def execute(self, request: ExecutionRequest) -> ExecutionResult: ...
 
 
 class ExecutionDisabled(PermissionError):
