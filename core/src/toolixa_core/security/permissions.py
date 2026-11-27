@@ -1,9 +1,9 @@
 """Canonical permission names. Manifest declarations never grant these by themselves."""
 
-from enum import Enum
+from enum import StrEnum
 
 
-class Permission(str, Enum):
+class Permission(StrEnum):
     WORKSPACE_READ = "workspace.read"
     WORKSPACE_WRITE = "workspace.write"
     NETWORK_HTTP = "network.http"

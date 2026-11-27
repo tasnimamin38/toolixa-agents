@@ -15,7 +15,7 @@ class ToolixaSettings:
     log_level: str = "INFO"
 
     @classmethod
-    def from_env(cls, environ: dict[str, str] | None = None) -> "ToolixaSettings":
+    def from_env(cls, environ: dict[str, str] | None = None) -> ToolixaSettings:
         values = os.environ if environ is None else environ
         provider = values.get("TOOLIXA_PROVIDER") or None
         model = values.get("TOOLIXA_MODEL") or None

@@ -43,7 +43,7 @@ class AgentManifest:
     documentation: str
 
     @classmethod
-    def from_mapping(cls, data: dict[str, Any]) -> "AgentManifest":
+    def from_mapping(cls, data: dict[str, Any]) -> AgentManifest:
         missing = sorted(_REQUIRED - data.keys())
         if missing:
             raise ValueError(f"manifest is missing required fields: {', '.join(missing)}")
