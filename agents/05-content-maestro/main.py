@@ -6,7 +6,9 @@ import argparse
 import json
 
 
-def build_brief(topic: str, *, audience: str = "general", content_format: str = "article") -> dict[str, object]:
+def build_brief(
+    topic: str, *, audience: str = "general", content_format: str = "article"
+) -> dict[str, object]:
     normalized = topic.strip()
     if not normalized:
         raise ValueError("topic cannot be empty")
@@ -25,9 +27,18 @@ def build_brief(topic: str, *, audience: str = "general", content_format: str = 
         "outline": [
             {"section": "Hook and audience problem", "purpose": "Explain why the topic matters."},
             {"section": "Core explanation", "purpose": "Define key terms and mechanisms."},
-            {"section": "Evidence and examples", "purpose": "Insert verified data and sourced examples."},
-            {"section": "Risks and trade-offs", "purpose": "Explain limitations and counterpoints."},
-            {"section": "Practical takeaway", "purpose": "Give clear next steps without unsupported promises."},
+            {
+                "section": "Evidence and examples",
+                "purpose": "Insert verified data and sourced examples.",
+            },
+            {
+                "section": "Risks and trade-offs",
+                "purpose": "Explain limitations and counterpoints.",
+            },
+            {
+                "section": "Practical takeaway",
+                "purpose": "Give clear next steps without unsupported promises.",
+            },
         ],
         "research_questions": [
             f"What are the latest authoritative facts about {normalized}?",
@@ -51,7 +62,12 @@ def main() -> None:
     parser.add_argument("--audience", default="general")
     parser.add_argument("--format", dest="content_format", default="article")
     args = parser.parse_args()
-    print(json.dumps(build_brief(args.topic, audience=args.audience, content_format=args.content_format), indent=2))
+    print(
+        json.dumps(
+            build_brief(args.topic, audience=args.audience, content_format=args.content_format),
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":

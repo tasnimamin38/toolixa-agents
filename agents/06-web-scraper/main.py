@@ -10,7 +10,9 @@ from urllib.parse import urljoin, urlsplit
 from bs4 import BeautifulSoup
 
 
-def extract_html(html: str, *, base_url: str | None = None, max_links: int = 200) -> dict[str, object]:
+def extract_html(
+    html: str, *, base_url: str | None = None, max_links: int = 200
+) -> dict[str, object]:
     if max_links < 0:
         raise ValueError("max_links cannot be negative")
     soup = BeautifulSoup(html, "html.parser")
@@ -28,6 +30,17 @@ def extract_html(html: str, *, base_url: str | None = None, max_links: int = 200
         if tag.get_text(" ", strip=True)
     ]
     links: list[dict[str, str]] = []
+    if max_links == 0:
+        return {
+            "title": title,
+            "description": description or None,
+            "canonical": canonical,
+            "headings": headings,
+            "links": links,
+            "links_returned": 0,
+            "network_requests": 0,
+            "mode": "local-html-only",
+        }
     seen: set[str] = set()
     for anchor in soup.find_all("a", href=True):
         href = str(anchor.get("href", "")).strip()
@@ -59,14 +72,18 @@ def extract_html(html: str, *, base_url: str | None = None, max_links: int = 200
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--file", required=True, help="Saved local HTML file")
-    parser.add_argument("--base-url", default=None, help="Optional URL used only to resolve relative links")
+    parser.add_argument(
+        "--base-url", default=None, help="Optional URL used only to resolve relative links"
+    )
     parser.add_argument("--max-links", type=int, default=200)
     args = parser.parse_args()
     source = Path(args.file).expanduser().resolve(strict=True)
     if not source.is_file() or source.stat().st_size > 5_000_000:
         raise ValueError("input must be a file no larger than 5 MB")
     html = source.read_text(encoding="utf-8", errors="replace")
-    print(json.dumps(extract_html(html, base_url=args.base_url, max_links=args.max_links), indent=2))
+    print(
+        json.dumps(extract_html(html, base_url=args.base_url, max_links=args.max_links), indent=2)
+    )
 
 
 if __name__ == "__main__":

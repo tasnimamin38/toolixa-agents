@@ -8,7 +8,20 @@ import re
 from pathlib import Path
 
 EXCLUDED_DIRS = {".git", ".venv", "venv", "node_modules", "__pycache__", "dist", "build"}
-EXTENSIONS = {".py", ".js", ".jsx", ".ts", ".tsx", ".json", ".toml", ".ini", ".cfg", ".yml", ".yaml", ".env"}
+EXTENSIONS = {
+    ".py",
+    ".js",
+    ".jsx",
+    ".ts",
+    ".tsx",
+    ".json",
+    ".toml",
+    ".ini",
+    ".cfg",
+    ".yml",
+    ".yaml",
+    ".env",
+}
 SECRET_ASSIGNMENT = re.compile(
     r"""(?i)\b(api[_-]?key|access[_-]?token|secret|password)\b\s*[:=]\s*['"]?([A-Za-z0-9_./+=-]{16,})"""
 )
@@ -33,7 +46,9 @@ def scan_text(source: str, file_name: str) -> list[dict[str, object]]:
         secret_match = SECRET_ASSIGNMENT.search(line)
         if secret_match:
             value = secret_match.group(2).lower()
-            if not any(marker in value for marker in ("placeholder", "changeme", "example", "your_")):
+            if not any(
+                marker in value for marker in ("placeholder", "changeme", "example", "your_")
+            ):
                 findings.append(
                     {
                         "file": file_name,
@@ -66,7 +81,9 @@ def scan_text(source: str, file_name: str) -> list[dict[str, object]]:
     return findings
 
 
-def scan_workspace(workspace: str | Path, *, max_files: int = 1000, max_bytes: int = 1_000_000) -> dict[str, object]:
+def scan_workspace(
+    workspace: str | Path, *, max_files: int = 1000, max_bytes: int = 1_000_000
+) -> dict[str, object]:
     root = Path(workspace).expanduser().resolve(strict=True)
     if not root.is_dir():
         raise ValueError("workspace must be a directory")

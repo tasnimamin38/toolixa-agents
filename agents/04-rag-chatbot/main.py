@@ -50,7 +50,9 @@ def chunk_document(
     return chunks
 
 
-def index_workspace(workspace: str | Path, *, max_files: int = 1000, max_bytes: int = 1_000_000) -> list[DocumentChunk]:
+def index_workspace(
+    workspace: str | Path, *, max_files: int = 1000, max_bytes: int = 1_000_000
+) -> list[DocumentChunk]:
     root = Path(workspace).expanduser().resolve(strict=True)
     if not root.is_dir():
         raise ValueError("workspace must be a directory")
@@ -108,7 +110,11 @@ def main() -> None:
     parser.add_argument("--query", required=True)
     args = parser.parse_args()
     chunks = index_workspace(args.workspace)
-    print(json.dumps({"results": retrieve(chunks, args.query), "chunks_indexed": len(chunks)}, indent=2))
+    print(
+        json.dumps(
+            {"results": retrieve(chunks, args.query), "chunks_indexed": len(chunks)}, indent=2
+        )
+    )
 
 
 if __name__ == "__main__":

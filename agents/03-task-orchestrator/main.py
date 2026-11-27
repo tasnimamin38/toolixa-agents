@@ -21,7 +21,9 @@ def order_tasks(tasks: list[dict[str, Any]], *, max_tasks: int = 100) -> list[st
             raise ValueError("every task must have a non-empty string id")
         if task_id in dependencies:
             raise ValueError(f"duplicate task id: {task_id}")
-        if not isinstance(depends_on, list) or not all(isinstance(item, str) for item in depends_on):
+        if not isinstance(depends_on, list) or not all(
+            isinstance(item, str) for item in depends_on
+        ):
             raise ValueError(f"depends_on for {task_id} must be a list of task ids")
         if task_id in depends_on:
             raise ValueError(f"task cannot depend on itself: {task_id}")
