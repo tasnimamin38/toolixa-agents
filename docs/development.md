@@ -17,7 +17,7 @@ python -m venv .venv
 .venv\Scripts\activate
 python -m pip install --upgrade pip
 python -m pip install -e "./core[gateway]"
-python -m pip install "pytest>=8,<9" "ruff>=0.8,<1"
+python -m pip install "pytest>=9.0.3,<10" "ruff>=0.8,<1"
 python -m pip install -r agents/06-web-scraper/requirements.txt
 ~~~
 

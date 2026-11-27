@@ -25,12 +25,15 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install security tooling on patched build tooling
+        run: |
+          python -m pip install --upgrade pip "setuptools>=84.1,<85" "pip-audit>=2,<4"
+
       - name: Install local gateway and isolated scraper dependencies
         run: |
-          python -m pip install --upgrade pip "pip-audit>=2,<4"
           python -m pip install -e "./core[gateway]" -r agents/06-web-scraper/requirements.txt
 
-      - name: Audit the complete installed runtime dependency tree
+      - name: Audit installed third-party dependencies
         run: pip-audit
 
       - name: Confirm core has no mandatory third-party dependencies

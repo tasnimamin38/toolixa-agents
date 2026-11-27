@@ -87,7 +87,7 @@ See [the gateway guide](docs/gateway-guide.md) for supported endpoint formats, A
 ```powershell
 python -m pip install -e "./core[gateway]"
 python -m pip install -r agents/06-web-scraper/requirements.txt
-python -m pip install "pytest>=8,<9" "ruff>=0.8,<1"
+python -m pip install "pytest>=9.0.3,<10" "ruff>=0.8,<1"
 python scripts/build_catalog.py --check
 python -m compileall -q core/src agents scripts tests
 ruff check core/src agents scripts tests
