@@ -396,17 +396,13 @@ Documentation must distinguish implemented features from planned adapters. No do
 
 ## 14. Repository naming and migration
 
-The approved target repository name is `toolixa-agents`. The existing repository is currently `toolixa-web-scraper`; the GitHub repository metadata and default branch have been verified. The available GitHub connector exposes file and branch operations but not a repository-rename operation.
+The repository has been renamed in GitHub settings from `tasnimamin38/toolixa-web-scraper` to `tasnimamin38/toolixa-agents`. The GitHub repository ID and `main` branch history were preserved. The canonical URL is now:
 
-The rename must be performed through an authorized GitHub repository settings/API route before production links are treated as final. After rename, verify:
+`https://github.com/tasnimamin38/toolixa-agents`
 
-- the canonical repository URL and default branch;
-- old-URL redirect behavior;
-- Vercel Git integration and production deployment source;
-- all catalog, README, documentation, and workflow repository URLs;
-- local clone remote instructions.
+The GitHub settings UI confirmed that the new name was available and that the repository page loaded under the new canonical name after the rename. GitHub normally redirects old repository URLs, but downstream integrations still require verification.
 
-Do not create a second repository or copy the project into a new repository merely to simulate a rename. Do not update links to the new URL until the rename is confirmed.
+The implementation updates catalog, README, and website links to the canonical repository name. Vercel Git integration and any existing local clone remotes must be checked by their operators; this repository change does not by itself prove those integrations are connected or deployed.
 
 ## 15. Licensing and source availability
 
