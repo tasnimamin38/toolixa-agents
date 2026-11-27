@@ -76,10 +76,10 @@ def test_web_scraper_parses_local_html_only():
     assert result["links"] == [{"text": "Guide", "href": "https://example.org/guide"}]
     assert result["network_requests"] == 0
 
+
 def test_web_scraper_zero_link_limit_returns_no_links():
     result = load_agent("06-web-scraper").extract_html(
         '<a href="https://example.org">Example</a>', max_links=0
     )
     assert result["links"] == []
     assert result["links_returned"] == 0
-
