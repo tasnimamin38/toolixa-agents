@@ -4,11 +4,11 @@
   <p><strong>Build, connect and operate modular AI agents with your own models, tools and runtime.</strong></p>
 
   <p>
-    <a href="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/ci.yml"><img src="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/ci.yml/badge.svg?branch=feature%2Fpython-local-ai-gateway" alt="CI status" /></a>
-    <a href="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/security.yml"><img src="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/security.yml/badge.svg?branch=feature%2Fpython-local-ai-gateway" alt="Dependency security status" /></a>
+    <a href="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/ci.yml"><img src="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status" /></a>
+    <a href="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/security.yml"><img src="https://github.com/tasnimamin38/toolixa-agents/actions/workflows/security.yml/badge.svg?branch=main" alt="Dependency security status" /></a>
     <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python 3.11+" />
     <img src="https://img.shields.io/badge/Architecture-Local--first-16A085" alt="Local-first architecture" />
-    <img src="https://img.shields.io/badge/Stage-Experimental%20Alpha-orange" alt="Experimental alpha" />
+    <img src="https://img.shields.io/badge/Stage-Experimental-orange" alt="Experimental alpha" />
     <img src="https://img.shields.io/badge/License-Not%20selected-lightgrey" alt="No license selected" />
   </p>
 
@@ -16,7 +16,7 @@
     <a href="https://toolixa-agents.vercel.app/">Live Agent Directory</a> ·
     <a href="#architecture">Architecture</a> ·
     <a href="#quick-start">Quick start</a> ·
-    <a href="docs/gateway-guide.md">Gateway guide</a> ·
+    <a href="https://github.com/tasnimamin38/toolixa-agents/blob/feature/python-local-ai-gateway/docs/gateway-guide.md">Gateway guide</a> ·
     <a href="#roadmap">Roadmap</a>
   </p>
 </div>
@@ -38,8 +38,8 @@ Toolixa Agents is evolving from a static agent directory and Python starter SDK 
 ## Current project status
 
 <div align="center">
-  <h3>EXPERIMENTAL ALPHA · PHASE 1</h3>
-  <p><strong>Local AI Gateway implemented · GitHub checks passing · independent security review pending</strong></p>
+  <h3>EXPERIMENTAL FOUNDATION · GATEWAY ALPHA UNDER REVIEW</h3>
+  <p><strong>Gateway implementation submitted · PR checks passing · independent security review pending</strong></p>
 </div>
 
 **Important release distinction:** the six-agent foundation and static directory are on `main`. The Local AI Gateway implementation is currently on the Draft [Pull Request #1](https://github.com/tasnimamin38/toolixa-agents/pull/1), branch `feature/python-local-ai-gateway`. It has passed Windows/Python 3.11 checks and the GitHub CI and dependency-audit workflows, but it has not yet been merged into `main` or deployed as a hosted backend.
@@ -105,7 +105,7 @@ Browse the [live directory](https://toolixa-agents.vercel.app/) or inspect each 
 
 ## Architecture
 
-The diagram shows the current local gateway boundary. The agent runtime and MCP tool bridge are future integrations, not completed components.
+The diagram shows the Local AI Gateway implemented on Draft PR #1. The six-agent foundation is on `main`; automatic agent-to-gateway wiring and the MCP tool bridge remain future integrations.
 
 ```mermaid
 flowchart LR
@@ -138,7 +138,7 @@ flowchart LR
 
 ## Provider compatibility
 
-The current gateway adapter supports the **OpenAI Chat Completions-compatible** model listing, JSON chat and streaming chat surface. This is a compatibility boundary, not a claim that every vendor-native API is already implemented.
+The Local AI Gateway adapter on Draft PR #1 supports the **OpenAI Chat Completions-compatible** model listing, JSON chat and streaming chat surface. This is a compatibility boundary, not a claim that every vendor-native API is already implemented.
 
 | Provider or runtime | Connection approach |
 |---|---|
@@ -150,7 +150,7 @@ The current gateway adapter supports the **OpenAI Chat Completions-compatible** 
 | Native Anthropic / Gemini APIs | Planned dedicated adapters |
 | MCP servers | Planned Python MCP client and permission-aware tool bridge |
 
-See [Provider and Gateway setup](docs/gateway-guide.md) for endpoint requirements and limitations.
+See [Provider and Gateway setup](https://github.com/tasnimamin38/toolixa-agents/blob/feature/python-local-ai-gateway/docs/gateway-guide.md) for endpoint requirements and limitations.
 
 ## Quick start
 
@@ -227,14 +227,14 @@ Read the [Security Model](docs/security-model.md) before connecting credentials 
 
 Experimental status does not end just because the dashboard or API exists. The project moves out of experimental only after the agents perform their documented jobs reliably, provider and MCP integrations pass adversarial testing, tool execution is isolated, credentials and tenants are protected, and an independent security review plus release acceptance tests are complete.
 
-Until those conditions are met, the honest status remains **Experimental Alpha**.
+Until those conditions are met, the honest project status remains **Experimental**.
 
 ## Development and verification
 
-From the repository root, install the optional gateway and development tools:
+For the current `main` foundation, install the core SDK and development tools:
 
 ```powershell
-python -m pip install -e "./core[gateway]"
+python -m pip install -e ./core
 python -m pip install -r agents/06-web-scraper/requirements.txt
 python -m pip install "pytest>=9.0.3,<10" "ruff>=0.8,<1"
 
@@ -245,7 +245,7 @@ python scripts/build_catalog.py --check
 python -m pytest -q
 ```
 
-The Local AI Gateway tests use mocked upstream responses. They do not call paid provider APIs.
+To run the Local AI Gateway preview, first check out the feature branch using the instructions above, then install `python -m pip install -e "./core[gateway]"`. Gateway contract tests use mocked upstream responses and do not make paid provider calls.
 
 ## Documentation
 
@@ -253,7 +253,7 @@ The Local AI Gateway tests use mocked upstream responses. They do not call paid 
 |---|---|
 | [Architecture](docs/architecture.md) | Components, boundaries and data flow |
 | [Security Model](docs/security-model.md) | Permissions, secrets, execution and threats |
-| [Gateway Guide](docs/gateway-guide.md) | Local dashboard, providers and compatible API |
+| [Gateway Guide](https://github.com/tasnimamin38/toolixa-agents/blob/feature/python-local-ai-gateway/docs/gateway-guide.md) | Local dashboard, providers and compatible API (Draft PR #1) |
 | [BYOR / BYOK Guide](docs/byor-guide.md) | Runtime and credentials ownership |
 | [Installation](docs/installation.md) | Install and launch |
 | [Development](docs/development.md) | Tests, lint, CI and contribution workflow |
