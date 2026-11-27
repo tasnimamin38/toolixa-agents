@@ -46,7 +46,7 @@
 ### Task 3: Read-only evidence tools
 
 - [x] Add bounded workspace file inventory, file reading and text search.
-- [x] Reject path traversal and symlink paths/escapes; exclude hidden folders and credential-bearing paths; cap file count, size and output.
+- [x] Reject POSIX and Windows absolute/drive paths, parent traversal, symlink paths/escapes; exclude hidden folders and credential-bearing paths; cap file count, size and output.
 - [x] Add Python AST/source inspection without importing or executing source.
 - [x] Add fixed read-only Git diff inspection with `shell=False`, no external diff/textconv, a five-second timeout and capped output.
 - [x] Add local CSV profiling for up to 10,000 rows with missingness, duplicates and descriptive statistics.

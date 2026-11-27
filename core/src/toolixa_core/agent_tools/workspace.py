@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any
 
 from toolixa_core.logging import redact
@@ -97,7 +97,14 @@ def resolve_workspace_file(context: ToolCallContext, value: str) -> tuple[Path, 
     if not isinstance(value, str) or not value.strip():
         raise ValueError("path must be a non-empty workspace-relative path")
     relative = Path(value)
-    if relative.is_absolute() or ".." in relative.parts:
+    windows_relative = PureWindowsPath(value)
+    if (
+        relative.is_absolute()
+        or windows_relative.is_absolute()
+        or windows_relative.drive
+        or ".." in relative.parts
+        or ".." in windows_relative.parts
+    ):
         raise PermissionError("path must remain inside the selected workspace")
     if is_excluded_path(relative):
         raise PermissionError("hidden or credential-bearing paths are not available to agents")
