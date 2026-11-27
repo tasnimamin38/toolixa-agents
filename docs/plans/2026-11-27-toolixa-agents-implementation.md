@@ -1,5 +1,7 @@
 # Toolixa Agent Ecosystem Implementation Plan
 
+**Implementation status:** First foundation release implemented and verified on 2026-11-27.
+
 > **For agentic workers:** Use the host's available task-by-task implementation workflow. Steps use checkbox syntax for tracking.
 
 **Goal:** Deliver a static agent directory and a secure, modular Python starter ecosystem with six independently documented agents.
@@ -28,12 +30,12 @@
 
 **Interfaces:** Produces AgentRequest, AgentResult, ExecutionBudget, AgentManifest, ProviderRegistry, ToolRegistry, RuntimePolicy, ApprovalManager, BudgetTracker, DisabledExecutor, ToolSpec, ToolCallContext, DocumentChunk, and ToolixaSettings.
 
-- [ ] Add and run tests for serialization, invalid budgets, artifact traversal, denied permissions, workspace boundaries, host allowlists, one-use approvals, step limits, provider selection, disabled execution, tool permission gates, and secret redaction.
-- [ ] Run: python -m pip install -e ./core && python -m pytest tests/core -q
+- [x] Add and run tests for serialization, invalid budgets, artifact traversal, denied permissions, workspace boundaries, host allowlists, one-use approvals, step limits, provider selection, disabled execution, tool permission gates, and secret redaction.
+- [x] Run: python -m pip install -e ./core && python -m pytest tests/core -q
 - Expected: all focused core tests pass.
-- [ ] Run: python -m compileall -q core/src
+- [x] Run: python -m compileall -q core/src
 - Expected: no syntax errors.
-- [ ] Commit: feat: establish Toolixa shared core and safety contracts.
+- [x] Commit: feat: establish Toolixa shared core and safety contracts.
 
 ### Task 2: Six independent agent starters
 
@@ -41,12 +43,12 @@
 
 **Interfaces:** Produces read-only workspace analysis, passive local security findings, deterministic task dependency ordering, local text retrieval with source ranges, evidence-aware content briefs, and local HTML extraction.
 
-- [ ] Test all six agent behaviors with temporary local fixtures; no test may contact arbitrary external hosts or execute shell commands.
-- [ ] Run: python -m pytest tests/agents -q
+- [x] Test all six agent behaviors with temporary local fixtures; no test may contact arbitrary external hosts or execute shell commands.
+- [x] Run: python -m pytest tests/agents -q
 - Expected: all six focused tests pass, secrets are not returned in findings, DAG cycles are rejected, RAG results cite line ranges, and scraper parses supplied HTML only.
-- [ ] Run: python scripts/build_catalog.py --check
+- [x] Run: python scripts/build_catalog.py --check
 - Expected: six manifests validate and generated catalog matches committed output.
-- [ ] Commit: feat: add six modular Toolixa agent starters.
+- [x] Commit: feat: add six modular Toolixa agent starters.
 
 ### Task 3: Static Agent Directory
 
@@ -54,12 +56,12 @@
 
 **Interfaces:** Consumes the deterministic catalog and produces a responsive static directory with search, category filters, status labels, and GitHub source/documentation links.
 
-- [ ] Verify catalog IDs and paths before rendering.
-- [ ] Use DOM text nodes and createElement; never inject catalog values with innerHTML.
-- [ ] Run: python scripts/build_catalog.py --check && python -m pytest -q
+- [x] Verify catalog IDs and paths before rendering.
+- [x] Use DOM text nodes and createElement; never inject catalog values with innerHTML.
+- [x] Run: python scripts/build_catalog.py --check && python -m pytest -q
 - Expected: deterministic catalog and all tests pass.
-- [ ] Verify Vercel config contains static headers only and no Python runtime or function.
-- [ ] Commit: feat: publish static Toolixa agent directory.
+- [x] Verify Vercel config contains static headers only and no Python runtime or function.
+- [x] Commit: feat: publish static Toolixa agent directory.
 
 ### Task 4: CI and release hygiene
 
@@ -67,16 +69,16 @@
 
 **Interfaces:** Consumes core, manifests, agent tests, catalog, and static assets; produces repeatable pull-request quality and dependency-audit checks.
 
-- [ ] Run: python -m compileall -q core/src agents scripts tests
+- [x] Run: python -m compileall -q core/src agents scripts tests
 - Expected: no syntax errors.
-- [ ] Run: ruff check core/src agents scripts tests
+- [x] Run: ruff check core/src agents scripts tests
 - Expected: no lint findings.
-- [ ] Run: ruff format --check core/src agents scripts tests
+- [x] Run: ruff format --check core/src agents scripts tests
 - Expected: all tracked Python files are formatted.
-- [ ] Run: python scripts/build_catalog.py --check && python -m pytest -q
+- [x] Run: python scripts/build_catalog.py --check && python -m pytest -q
 - Expected: all local checks pass.
-- [ ] Ensure CI does not require paid provider keys or perform uncontrolled scans.
-- [ ] Commit: ci: add Toolixa quality and dependency security checks.
+- [x] Ensure CI does not require paid provider keys or perform uncontrolled scans.
+- [x] Commit: ci: add Toolixa quality and dependency security checks.
 
 ## Completion criteria
 

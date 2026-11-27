@@ -2,6 +2,8 @@
 
 **A modular, local-first ecosystem of developer-operated AI agents.**
 
+**Live directory:** https://toolixa-agents.vercel.app
+
 Toolixa is a source-code directory for independent agents. Bring your own runtime (BYOR), bring your own provider credentials (BYOK), and keep execution under your control.
 
 ## Agent directory
