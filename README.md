@@ -29,8 +29,9 @@ python -m venv .venv
 python -m pip install --upgrade pip
 python -m pip install -e ./core
 python -m pip install -r agents/06-web-scraper/requirements.txt
+python -m pip install "pytest>=8,<9" "ruff>=0.8,<1"
 python scripts/build_catalog.py
-pytest -q
+python -m pytest -q
 ~~~
 
 Run an agent from its directory. For example:

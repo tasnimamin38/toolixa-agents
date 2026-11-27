@@ -9,10 +9,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: toolixa-ci-\${{ github.workflow }}-\${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   quality:
     name: Python and catalog quality
