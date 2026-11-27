@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "dev-copilot",
+  "name": "Dev Copilot",
+  "version": "0.1.0",
+  "category": "development",
+  "description": "Read-only Python workspace inventory and syntax analysis; never edits files or runs code.",
+  "entrypoint": "main.py",
+  "python": ">=3.11",
+  "dependencies": [],
+  "capabilities": [
+    "workspace_inventory",
+    "python_syntax_check",
+    "read_only_analysis"
+  ],
+  "permissions": [
+    "workspace.read"
+  ],
+  "status": "experimental",
+  "documentation": "README.md"
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "web-scraper",
+  "name": "Web Scraper",
+  "version": "0.1.0",
+  "category": "web",
+  "description": "Extracts title, metadata, headings, and safe HTTP(S) or relative links from a supplied local HTML file.",
+  "entrypoint": "main.py",
+  "python": ">=3.11",
+  "dependencies": [
+    "beautifulsoup4>=4.12,<5"
+  ],
+  "capabilities": [
+    "local_html_parsing",
+    "metadata_extraction",
+    "link_extraction"
+  ],
+  "permissions": [
+    "workspace.read"
+  ],
+  "status": "experimental",
+  "documentation": "README.md"
+}

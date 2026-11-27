@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "repository": "tasnimamin38/toolixa-agents",
+  "agents": [
+    {
+      "id": "dev-copilot",
+      "name": "Dev Copilot",
+      "version": "0.1.0",
+      "category": "development",
+      "description": "Read-only Python workspace inventory and syntax analysis; never edits files or runs code.",
+      "status": "experimental",
+      "capabilities": [
+        "workspace_inventory",
+        "python_syntax_check",
+        "read_only_analysis"
+      ],
+      "permissions": [
+        "workspace.read"
+      ],
+      "dependencies": [],
+      "python": ">=3.11",
+      "path": "agents/01-dev-copilot",
+      "entrypoint": "main.py",
+      "documentation": "README.md"
+    },
+    {
+      "id": "aegis-security",
+      "name": "Aegis Security",
+      "version": "0.1.0",
+      "category": "security",
+      "description": "Local passive source inspection for potential hard-coded secrets and risky Python patterns.",
+      "status": "experimental",
+      "capabilities": [
+        "passive_secret_pattern_scan",
+        "python_risk_pattern_scan",
+        "redacted_findings"
+      ],
+      "permissions": [
+        "workspace.read",
+        "security.scan.passive"
+      ],
+      "dependencies": [],
+      "python": ">=3.11",
+      "path": "agents/02-aegis-security",
+      "entrypoint": "main.py",
+      "documentation": "README.md"
+    },
+    {
+      "id": "task-orchestrator",
+      "name": "Task Orchestrator",
+      "version": "0.1.0",
+      "category": "orchestration",
+      "description": "Validates task dependencies and returns a deterministic execution order without launching sub-agents.",
+      "status": "experimental",
+      "capabilities": [
+        "task_decomposition_input",
+        "dependency_validation",
+        "topological_ordering"
+      ],
+      "permissions": [],
+      "dependencies": [],
+      "python": ">=3.11",
+      "path": "agents/03-task-orchestrator",
+      "entrypoint": "main.py",
+      "documentation": "README.md"
+    },
+    {
+      "id": "rag-chatbot",
+      "name": "RAG Chatbot",
+      "version": "0.1.0",
+      "category": "knowledge",
+      "description": "Indexes local Markdown and text documents and retrieves passages with exact source line ranges.",
+      "status": "experimental",
+      "capabilities": [
+        "local_text_ingestion",
+        "keyword_retrieval",
+        "source_line_citations"
+      ],
+      "permissions": [
+        "workspace.read"
+      ],
+      "dependencies": [],
+      "python": ">=3.11",
+      "path": "agents/04-rag-chatbot",
+      "entrypoint": "main.py",
+      "documentation": "README.md"
+    },
+    {
+      "id": "content-maestro",
+      "name": "Content Maestro",
+      "version": "0.1.0",
+      "category": "content",
+      "description": "Creates structured editorial briefs with research questions and fact-check requirements, without fabricating research.",
+      "status": "experimental",
+      "capabilities": [
+        "content_brief",
+        "editorial_outline",
+        "fact_check_checklist"
+      ],
+      "permissions": [],
+      "dependencies": [],
+      "python": ">=3.11",
+      "path": "agents/05-content-maestro",
+      "entrypoint": "main.py",
+      "documentation": "README.md"
+    },
+    {
+      "id": "web-scraper",
+      "name": "Web Scraper",
+      "version": "0.1.0",
+      "category": "web",
+      "description": "Extracts title, metadata, headings, and safe HTTP(S) or relative links from a supplied local HTML file.",
+      "status": "experimental",
+      "capabilities": [
+        "local_html_parsing",
+        "metadata_extraction",
+        "link_extraction"
+      ],
+      "permissions": [
+        "workspace.read"
+      ],
+      "dependencies": [
+        "beautifulsoup4>=4.12,<5"
+      ],
+      "python": ">=3.11",
+      "path": "agents/06-web-scraper",
+      "entrypoint": "main.py",
+      "documentation": "README.md"
+    }
+  ]
+}

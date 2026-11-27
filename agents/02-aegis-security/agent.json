@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "aegis-security",
+  "name": "Aegis Security",
+  "version": "0.1.0",
+  "category": "security",
+  "description": "Local passive source inspection for potential hard-coded secrets and risky Python patterns.",
+  "entrypoint": "main.py",
+  "python": ">=3.11",
+  "dependencies": [],
+  "capabilities": [
+    "passive_secret_pattern_scan",
+    "python_risk_pattern_scan",
+    "redacted_findings"
+  ],
+  "permissions": [
+    "workspace.read",
+    "security.scan.passive"
+  ],
+  "status": "experimental",
+  "documentation": "README.md"
+}

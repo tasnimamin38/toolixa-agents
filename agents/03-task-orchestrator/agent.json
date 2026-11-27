@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "id": "task-orchestrator",
+  "name": "Task Orchestrator",
+  "version": "0.1.0",
+  "category": "orchestration",
+  "description": "Validates task dependencies and returns a deterministic execution order without launching sub-agents.",
+  "entrypoint": "main.py",
+  "python": ">=3.11",
+  "dependencies": [],
+  "capabilities": [
+    "task_decomposition_input",
+    "dependency_validation",
+    "topological_ordering"
+  ],
+  "permissions": [],
+  "status": "experimental",
+  "documentation": "README.md"
+}

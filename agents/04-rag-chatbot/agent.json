@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "rag-chatbot",
+  "name": "RAG Chatbot",
+  "version": "0.1.0",
+  "category": "knowledge",
+  "description": "Indexes local Markdown and text documents and retrieves passages with exact source line ranges.",
+  "entrypoint": "main.py",
+  "python": ">=3.11",
+  "dependencies": [],
+  "capabilities": [
+    "local_text_ingestion",
+    "keyword_retrieval",
+    "source_line_citations"
+  ],
+  "permissions": [
+    "workspace.read"
+  ],
+  "status": "experimental",
+  "documentation": "README.md"
+}
