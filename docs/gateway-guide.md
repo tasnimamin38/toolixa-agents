@@ -112,7 +112,7 @@ Encryption at rest is a layer of defence, not a protection against malware or an
 
 **Implemented in this alpha:** custom OpenAI-compatible upstreams; encrypted local provider-key storage; local dashboard login; API-key creation/revocation; model discovery; one-shot chat; streaming chat proxy; dashboard playground; API authentication; upstream-key redaction; localhost-only listener and trusted-host restrictions.
 
-**Not implemented yet:** direct native adapters for all proprietary provider protocols; OAuth sign-in; arbitrary non-OpenAI-compatible REST schemas; MCP client/tool execution; agent tool calling; model-based multi-agent delegation; per-agent model policies; browser automation; remote multi-user access; high-availability or production-grade rate limiting and observability.
+**Not implemented yet:** direct native adapters for all proprietary provider protocols; OAuth sign-in; arbitrary non-OpenAI-compatible REST schemas; MCP client/tool execution; model-based multi-agent delegation; persistent memory/vector search; controlled source patch/write and test-runner execution; browser automation; remote multi-user access; high-availability or production-grade rate limiting and observability.
 
 “Any model” therefore means any model exposed by an endpoint that speaks the supported compatible API, not literally every model or AI protocol. Other native protocols need an adapter or a compatible gateway in between.
 
@@ -127,3 +127,31 @@ Encryption at rest is a layer of defence, not a protection against malware or an
 - Keep the machine, Windows account, Python environment and local data directory secured.
 
 This alpha has not yet completed an independent penetration test, comprehensive CSRF/rate-limit review, or production multi-user threat model. It is for trusted local development and evaluation only.
+
+## Connect the model-driven specialist agents
+
+The advanced-agent runtime uses the same local Gateway but needs its own Toolixa API key and a selected model with tool/function-calling support.
+
+Install both optional extras:
+
+~~~powershell
+python -m pip install -e "./core[gateway,runtime]"
+~~~
+
+Set the agent process environment:
+
+~~~powershell
+$env:TOOLIXA_GATEWAY_URL = "http://127.0.0.1:20128/v1"
+$env:TOOLIXA_API_KEY = "YOUR_TOOLIXA_GATEWAY_KEY"
+$env:TOOLIXA_MODEL = "provider-id/model-id"
+~~~
+
+The Toolixa key authenticates the agent to the local Gateway; the upstream provider key stays inside the Gateway's encrypted vault. Run a specialist with an explicit workspace and grant:
+
+~~~powershell
+python agents/07-software-engineer/main.py "Propose a safe refactor" --workspace C:\path\to\repo --grant workspace.read
+~~~
+
+The shared Python runtime sends tool schemas to the model, validates returned arguments, checks workspace.read, invokes only the agent's registered tools and stops at the step/tool/wall-time budget. No source write, arbitrary shell execution, browser automation or MCP tool invocation is available.
+
+Select a model that supports tool calling. A model that only returns text cannot invoke the specialist's deterministic tools. See advanced-agents-guide.md for all six specialists and their PowerShell commands.

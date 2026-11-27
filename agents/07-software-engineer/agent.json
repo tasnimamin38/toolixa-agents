@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "software-engineer",
+  "name": "Software Engineer",
+  "version": "0.1.0",
+  "category": "development",
+  "description": "Model-powered project engineering analysis using read-only workspace, Python AST and Git diff tools; proposes implementation plans without modifying files or executing code.",
+  "entrypoint": "main.py",
+  "python": ">=3.11",
+  "dependencies": [],
+  "capabilities": [
+    "project_architecture_analysis",
+    "codebase_navigation",
+    "python_ast_inspection",
+    "git_diff_review",
+    "implementation_planning"
+  ],
+  "permissions": [
+    "workspace.read"
+  ],
+  "status": "experimental",
+  "documentation": "README.md"
+}

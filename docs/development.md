@@ -2,48 +2,61 @@
 
 ## Repository layout
 
-- `core/` contains provider-neutral contracts, safety primitives, and the optional local AI gateway.
-- `core/src/toolixa_core/gateway/` contains the Python dashboard/API, local encrypted store, and OpenAI-compatible provider transport.
-- `agents/` contains independent agent starters and manifests.
-- `catalog/` contains generated website data.
-- `scripts/` contains repository maintenance scripts.
-- `tests/` contains core, agent, catalog, static-site and gateway checks.
-- `docs/` contains architecture and operational guidance.
+- core/ contains Python contracts, policy, runtime, tool registry, read-only tools and the optional local Gateway.
+- core/src/toolixa_core/runtime/agent.py contains the shared bounded tool-call loop.
+- core/src/toolixa_core/agent_tools/ contains real local evidence tools.
+- agents/01-06 contains the initial bounded starter examples.
+- agents/07-12 contains six model-driven read-only specialists.
+- catalog/agents.json is generated from manifests; do not edit by hand.
+- tests/ contains core, gateway, agent, catalogue and static-directory tests.
+- docs/ contains architecture, security, install and phase plans.
 
 ## Environment setup
 
 ~~~powershell
 python -m venv .venv
-.venv\Scripts\activate
+.\.venv\Scripts\activate
 python -m pip install --upgrade pip
-python -m pip install -e "./core[gateway]"
+python -m pip install -e "./core[gateway,runtime]"
 python -m pip install "pytest>=9.0.3,<10" "ruff>=0.8,<1"
 python -m pip install -r agents/06-web-scraper/requirements.txt
 ~~~
 
-The base `toolixa-core` package has no mandatory third-party runtime dependencies. The optional `gateway` extra installs the packages needed for the local dashboard and API.
+The base core package has no mandatory third-party runtime dependencies. Gateway and model-runtime dependencies are optional extras.
 
-## Run and test the local gateway
+## Run the Gateway and a specialist
+
+Start the local Gateway in one terminal:
 
 ~~~powershell
-python -m toolixa_core.gateway --no-open
+python -m toolixa_core.gateway
 ~~~
 
-By default it binds to `127.0.0.1:20128`. The local provider API key is configured from the browser dashboard, not hard-coded or passed to tests. Gateway contract tests use `httpx.MockTransport` and do not make live provider calls.
+In another PowerShell session, set TOOLIXA_GATEWAY_URL, TOOLIXA_API_KEY and TOOLIXA_MODEL from the local dashboard and run one of agents/07-12 with --workspace PATH --grant workspace.read.
 
-Never expose this experimental local dashboard/API to the public internet.
+Never commit an actual API key. Use synthetic test fixtures and mock provider responses.
 
-## Add an agent
+## Runtime contract
 
-1. Create a uniquely named folder under `agents/`.
-2. Add `main.py`, `agent.json`, `README.md`, `requirements.txt`, and `.env.example`.
-3. Use only canonical permission identifiers from core. A manifest declaration does not grant access.
-4. Keep optional/heavy dependencies inside that agent.
-5. Add focused tests under `tests/agents`.
-6. Regenerate `catalog/agents.json` with `python scripts/build_catalog.py`.
-7. Run all checks before committing.
+A specialist's build_agent() -> AgentDefinition declares its own tools and system prompt. ToolAgent.run(AgentRequest) -> AgentResult performs sequential model/tool turns. A model-issued tool call must:
+1. identify a registered tool and unique call ID;
+2. contain valid JSON matching that tool's declared parameter schema;
+3. pass the request-scoped RuntimePolicy;
+4. remain inside the request's step, tool-call and wall-clock budget.
 
-The catalog builder validates relative entry-point/documentation paths and known permission names. It does not import or run agent code.
+A manifest permission is descriptive only. It never grants access by itself.
+
+## Add a specialist
+
+1. Create agents/NN-name/main.py with a real build_agent() factory.
+2. Use existing deterministic tools or add a bounded tool under core/src/toolixa_core/agent_tools/.
+3. Give each new tool a JSON parameter schema and explicit permission requirement.
+4. Add a distinct system prompt explaining the task and limitations.
+5. Add agent.json and a detailed README.
+6. Add a fake-provider end-to-end test that proves the real tool is called and its evidence reaches the final answer.
+7. Regenerate and validate the catalogue.
+
+Do not list an agent that has no executable behavior, tests or documented scope.
 
 ## Local quality checks
 
@@ -55,25 +68,20 @@ python scripts/build_catalog.py --check
 python -m pytest -q
 ~~~
 
-## Pull requests and CI
-
-GitHub Actions runs compile, lint, formatting, catalog consistency, tests, and dependency auditing of the declared runtime dependency trees. CI does not require provider API keys or perform active network scans.
-
 ## Security review checklist
 
-- Does the new agent request only the permissions it needs?
-- Are paths constrained to selected workspaces?
-- Does network access have exact host policy and an enforced egress boundary?
-- Are redirects and DNS resolution handled safely?
-- Are secrets omitted from logs, errors, manifests, and artifacts?
-- Are tool results and retrieved data treated as untrusted?
-- Is shell/process execution absent unless an approved isolated executor exists?
-- Are tests deterministic and free of uncontrolled external requests?
-- Does any dashboard/API change include authentication, CSRF, session and rate-limit considerations?
-- Are gateway URLs supplied only by a trusted local operator until DNS pinning/egress controls exist?
+- Does a tool operate only within the selected workspace root?
+- Are symlink escapes, path traversal, hidden directories and credentials blocked?
+- Does each tool validate its arguments and cap file/output sizes?
+- Are prompts, retrieved content and model tool calls treated as untrusted?
+- Is every tool invocation checked against the request grant and JSON schema?
+- Are wall time, model turns, tool calls and tool results bounded?
+- Are secrets omitted from errors, output and logs?
+- Is arbitrary process execution still disabled?
+- Do tests use fake model responses and deterministic temporary workspaces?
 
 ## Current limitations
 
-The initial executor always denies process execution. The Web Scraper parses local HTML only. Content Maestro does not browse. RAG uses lexical retrieval. Aegis performs passive local pattern checks. Task Orchestrator orders dependencies but does not launch agents.
+Specialists are read-only. The Software Engineer can suggest a patch as text but cannot apply it. Test Engineer can propose tests but cannot execute them. Research Analyst searches local files only. Data Analyst supports CSV, API Architect supports OpenAPI 3.x JSON only, and the existing Web Scraper parses supplied local HTML only.
 
-The local gateway currently accepts OpenAI Chat Completions-compatible upstream APIs. It does not yet implement every native vendor API, MCP client/tool execution, or automatic model wiring for each agent. It is an experimental, single-user, loopback-only alpha; a complete independent security review is still required before public deployment or production use.
+MCP, native Anthropic/Gemini adapters, agent-to-agent delegation, vector memory, browser automation, source writes, test execution and isolated shell execution are future work. Passing tests makes this an experimental alpha, not a production autonomous-agent platform.

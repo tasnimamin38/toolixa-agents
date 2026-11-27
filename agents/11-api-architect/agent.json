@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "api-architect",
+  "name": "API Architect",
+  "version": "0.1.0",
+  "category": "engineering",
+  "description": "Model-powered API design and integration planning from local OpenAPI 3.x JSON contracts and project source files.",
+  "entrypoint": "main.py",
+  "python": ">=3.11",
+  "dependencies": [],
+  "capabilities": [
+    "openapi_contract_inspection",
+    "endpoint_inventory",
+    "schema_mapping",
+    "api_integration_planning",
+    "compatibility_analysis"
+  ],
+  "permissions": [
+    "workspace.read"
+  ],
+  "status": "experimental",
+  "documentation": "README.md"
+}

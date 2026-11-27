@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "code-reviewer",
+  "name": "Code Reviewer",
+  "version": "0.1.0",
+  "category": "development",
+  "description": "Model-powered code review over the current Git diff and relevant source, with read-only Python AST analysis and prioritized evidence-backed findings.",
+  "entrypoint": "main.py",
+  "python": ">=3.11",
+  "dependencies": [],
+  "capabilities": [
+    "diff_review",
+    "risk_prioritization",
+    "python_static_review",
+    "test_gap_detection",
+    "security_review"
+  ],
+  "permissions": [
+    "workspace.read"
+  ],
+  "status": "experimental",
+  "documentation": "README.md"
+}
