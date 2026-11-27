@@ -98,7 +98,7 @@
 
 ## Phase 1: Local AI Gateway (experimental alpha)
 
-**Implementation status:** Code and Windows/Python 3.11 local checks complete on branch `feature/python-local-ai-gateway`; GitHub Actions validation and review are pending.
+**Implementation status:** Local code and Windows/Python 3.11 validation complete on branch `feature/python-local-ai-gateway`; GitHub Actions CI and dependency audit passed for commit `00d3c4b3b8c3000f1d9531ffc210ff07337c090c`. Independent security review remains pending.
 
 **Goal:** Turn Toolixa from a catalog plus SDK skeleton into a locally operated, browser-configurable AI gateway without making core SDK dependencies mandatory or introducing a hosted/paid runtime.
 
@@ -114,7 +114,7 @@
 - [x] Add mock-only tests for storage, auth, endpoint validation, model listing, JSON/SSE chat, redaction and host validation; no live provider key or paid provider request is used.
 - [x] Run on Windows Python 3.11.9: `pip install -e "./core[gateway]"`, compileall, Ruff check/format, catalog check and full pytest suite.
 - [x] Local result: 36 tests passed; Ruff clean; all 49 Python files formatted; compile and catalog checks passed.
-- [ ] Push branch and verify GitHub Actions CI and dependency audit.
+- [x] Push branch and verify GitHub Actions CI and dependency audit on commit `00d3c4b3b8c3000f1d9531ffc210ff07337c090c`; both workflows passed.
 - [ ] Complete independent code/security review before any public release.
 
 ### Explicit limits of this phase
