@@ -1,8 +1,14 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 from pathlib import Path
+from typing import Any
+
+from toolixa_core.contracts.request import AgentRequest
+from toolixa_core.contracts.response import AgentStatus
+from toolixa_core.runtime.agent import ToolAgent
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -75,14 +81,6 @@ def test_each_original_agent_has_domain_specific_tools_not_only_generic_prompts(
         definition = load_agent(folder).build_agent()
         actual = {tool.spec.name for tool in definition.tools}
         assert actual == expected["tools"], folder
-
-
-import json
-from typing import Any
-
-from toolixa_core.contracts.request import AgentRequest
-from toolixa_core.contracts.response import AgentStatus
-from toolixa_core.runtime.agent import ToolAgent
 
 
 class StarterFakeClient:
