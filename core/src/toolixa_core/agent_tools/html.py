@@ -176,9 +176,7 @@ class CrawlLocalHTMLSiteTool:
                 truncated = True
                 break
             try:
-                relative, source = read_workspace_text(
-                    context, current_path, max_bytes=1_000_000
-                )
+                relative, source = read_workspace_text(context, current_path, max_bytes=1_000_000)
             except (OSError, ValueError, PermissionError):
                 unavailable_links.append(current_path)
                 continue

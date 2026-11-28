@@ -178,15 +178,27 @@ class CompareOpenAPIContractsTool:
                     continue
                 if not old_param.get("required", False) and new_param.get("required", False):
                     add("REQUIRED_PARAMETER_ADDED", label, "An optional parameter became required.")
-                old_type = old_param.get("schema", {}).get("type") if isinstance(old_param.get("schema"), dict) else None
-                new_type = new_param.get("schema", {}).get("type") if isinstance(new_param.get("schema"), dict) else None
+                old_type = (
+                    old_param.get("schema", {}).get("type")
+                    if isinstance(old_param.get("schema"), dict)
+                    else None
+                )
+                new_type = (
+                    new_param.get("schema", {}).get("type")
+                    if isinstance(new_param.get("schema"), dict)
+                    else None
+                )
                 if old_type and new_type and old_type != new_type:
                     add("PARAMETER_SCHEMA_CHANGED", label, "The parameter schema type changed.")
             old_responses = old.get("responses", {})
             new_responses = new.get("responses", {})
             if isinstance(old_responses, dict) and isinstance(new_responses, dict):
                 for code in sorted(set(old_responses) - set(new_responses)):
-                    add("RESPONSE_CODE_REMOVED", location + " response " + code, "An existing response code was removed.")
+                    add(
+                        "RESPONSE_CODE_REMOVED",
+                        location + " response " + code,
+                        "An existing response code was removed.",
+                    )
             old_body = old.get("requestBody", {})
             new_body = new.get("requestBody", {})
             if isinstance(old_body, dict) and isinstance(new_body, dict):
@@ -196,12 +208,20 @@ class CompareOpenAPIContractsTool:
                 new_media = new_body.get("content", {})
                 if isinstance(old_media, dict) and isinstance(new_media, dict):
                     for media in sorted(set(old_media) - set(new_media)):
-                        add("REQUEST_MEDIA_TYPE_REMOVED", location + " " + media, "A previously accepted request media type was removed.")
+                        add(
+                            "REQUEST_MEDIA_TYPE_REMOVED",
+                            location + " " + media,
+                            "A previously accepted request media type was removed.",
+                        )
 
         before_components = before.get("components", {})
         after_components = after.get("components", {})
-        old_schemas = before_components.get("schemas", {}) if isinstance(before_components, dict) else {}
-        new_schemas = after_components.get("schemas", {}) if isinstance(after_components, dict) else {}
+        old_schemas = (
+            before_components.get("schemas", {}) if isinstance(before_components, dict) else {}
+        )
+        new_schemas = (
+            after_components.get("schemas", {}) if isinstance(after_components, dict) else {}
+        )
         if not isinstance(old_schemas, dict):
             old_schemas = {}
         if not isinstance(new_schemas, dict):
@@ -210,13 +230,23 @@ class CompareOpenAPIContractsTool:
             location = "components.schemas." + schema_name
             new_schema = new_schemas.get(schema_name)
             if not isinstance(new_schema, dict):
-                add("COMPONENT_SCHEMA_REMOVED", location, "An existing component schema was removed.")
+                add(
+                    "COMPONENT_SCHEMA_REMOVED",
+                    location,
+                    "An existing component schema was removed.",
+                )
                 continue
-            old_properties = old_schema.get("properties", {}) if isinstance(old_schema, dict) else {}
+            old_properties = (
+                old_schema.get("properties", {}) if isinstance(old_schema, dict) else {}
+            )
             new_properties = new_schema.get("properties", {})
             if isinstance(old_properties, dict) and isinstance(new_properties, dict):
                 for prop in sorted(set(old_properties) - set(new_properties)):
-                    add("SCHEMA_PROPERTY_REMOVED", location + "." + prop, "An existing schema property was removed.")
+                    add(
+                        "SCHEMA_PROPERTY_REMOVED",
+                        location + "." + prop,
+                        "An existing schema property was removed.",
+                    )
                 for prop in sorted(set(old_properties) & set(new_properties)):
                     old_prop = old_properties[prop]
                     new_prop = new_properties[prop]
@@ -224,7 +254,11 @@ class CompareOpenAPIContractsTool:
                         old_type = old_prop.get("type")
                         new_type = new_prop.get("type")
                         if old_type and new_type and old_type != new_type:
-                            add("SCHEMA_PROPERTY_TYPE_CHANGED", location + "." + prop, "A schema property type changed.")
+                            add(
+                                "SCHEMA_PROPERTY_TYPE_CHANGED",
+                                location + "." + prop,
+                                "A schema property type changed.",
+                            )
                         old_enum_values = old_prop.get("enum", [])
                         new_enum_values = new_prop.get("enum", [])
                         old_enum = (
@@ -238,12 +272,22 @@ class CompareOpenAPIContractsTool:
                             else set()
                         )
                         if old_enum and new_enum and old_enum - new_enum:
-                            add("ENUM_VALUES_REMOVED", location + "." + prop, "One or more previously valid enum values were removed.")
-            old_required = set(old_schema.get("required", [])) if isinstance(old_schema, dict) else set()
+                            add(
+                                "ENUM_VALUES_REMOVED",
+                                location + "." + prop,
+                                "One or more previously valid enum values were removed.",
+                            )
+            old_required = (
+                set(old_schema.get("required", [])) if isinstance(old_schema, dict) else set()
+            )
             new_required = set(new_schema.get("required", []))
             for prop in sorted(new_required - old_required):
                 if isinstance(new_properties, dict) and prop in new_properties:
-                    add("SCHEMA_REQUIRED_PROPERTY_ADDED", location + "." + prop, "A newly required property can break existing clients.")
+                    add(
+                        "SCHEMA_REQUIRED_PROPERTY_ADDED",
+                        location + "." + prop,
+                        "A newly required property can break existing clients.",
+                    )
 
         return {
             "before_path": before_path,

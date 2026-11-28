@@ -21,7 +21,12 @@ def build_agent() -> AgentDefinition:
             "Do not call endpoints, fetch remote URLs, modify files or claim an integration has been deployed."
         ),
         min_tool_calls=1,
-        tools=(ListWorkspaceFilesTool(), ReadWorkspaceFileTool(), InspectOpenAPITool(), CompareOpenAPIContractsTool()),
+        tools=(
+            ListWorkspaceFilesTool(),
+            ReadWorkspaceFileTool(),
+            InspectOpenAPITool(),
+            CompareOpenAPIContractsTool(),
+        ),
     )
 
 

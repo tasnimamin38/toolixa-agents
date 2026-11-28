@@ -130,8 +130,18 @@ def test_openapi_comparator_reports_backwards_incompatible_changes(tmp_path: Pat
             "/payments": {
                 "post": {
                     "operationId": "createPayment",
-                    "parameters": [{"name": "reference", "in": "query", "required": False, "schema": {"type": "string"}}],
-                    "responses": {"201": {"description": "Created"}, "400": {"description": "Bad request"}},
+                    "parameters": [
+                        {
+                            "name": "reference",
+                            "in": "query",
+                            "required": False,
+                            "schema": {"type": "string"},
+                        }
+                    ],
+                    "responses": {
+                        "201": {"description": "Created"},
+                        "400": {"description": "Bad request"},
+                    },
                 }
             }
         },
@@ -152,7 +162,14 @@ def test_openapi_comparator_reports_backwards_incompatible_changes(tmp_path: Pat
             "/payments": {
                 "post": {
                     "operationId": "createPayment",
-                    "parameters": [{"name": "reference", "in": "query", "required": True, "schema": {"type": "integer"}}],
+                    "parameters": [
+                        {
+                            "name": "reference",
+                            "in": "query",
+                            "required": True,
+                            "schema": {"type": "integer"},
+                        }
+                    ],
                     "responses": {"400": {"description": "Bad request"}},
                 }
             }
@@ -209,7 +226,7 @@ def test_local_html_site_crawler_traverses_only_workspace_files(tmp_path: Path):
     root = tmp_path / "workspace"
     (root / "docs").mkdir(parents=True)
     (root / "index.html").write_text(
-        '<html><head><title>Home</title></head><body>'
+        "<html><head><title>Home</title></head><body>"
         '<h1>Welcome</h1><a href="/docs/guide.html">Guide</a>'
         '<a href="https://outside.example/path">External</a></body></html>',
         encoding="utf-8",
@@ -238,9 +255,7 @@ def test_python_module_graph_detects_local_import_cycle_and_external_modules(tmp
     (root / "package" / "alpha.py").write_text(
         "from package import beta\nimport json\n", encoding="utf-8"
     )
-    (root / "package" / "beta.py").write_text(
-        "from package import alpha\n", encoding="utf-8"
-    )
+    (root / "package" / "beta.py").write_text("from package import alpha\n", encoding="utf-8")
 
     result = AnalyzePythonModuleGraphTool().invoke(
         {"max_files": 50},

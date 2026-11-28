@@ -218,17 +218,22 @@ class PythonSecurityASTTool:
                 )
             elif name == "yaml.load":
                 loader = next((item.value for item in node.keywords if item.arg == "Loader"), None)
-                safe_loader = (
-                    isinstance(loader, ast.Attribute)
-                    and loader.attr in {"SafeLoader", "CSafeLoader"}
-                )
+                safe_loader = isinstance(loader, ast.Attribute) and loader.attr in {
+                    "SafeLoader",
+                    "CSafeLoader",
+                }
                 if not safe_loader:
                     rule = (
                         "PYTHON_UNSAFE_YAML_LOAD",
                         "high",
                         "YAML loading should use SafeLoader or CSafeLoader for untrusted input.",
                     )
-            elif name in {"subprocess.run", "subprocess.call", "subprocess.Popen", "subprocess.check_output"}:
+            elif name in {
+                "subprocess.run",
+                "subprocess.call",
+                "subprocess.Popen",
+                "subprocess.check_output",
+            }:
                 shell = next((item.value for item in node.keywords if item.arg == "shell"), None)
                 if isinstance(shell, ast.Constant) and shell.value is True:
                     rule = (

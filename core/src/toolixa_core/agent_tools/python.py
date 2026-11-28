@@ -128,10 +128,7 @@ class AnalyzePythonModuleGraphTool:
                 truncated = True
                 break
             candidates.append((relative, path))
-        modules = {
-            self._module_name(relative): (relative, path)
-            for relative, path in candidates
-        }
+        modules = {self._module_name(relative): (relative, path) for relative, path in candidates}
         graph: dict[str, set[str]] = {name: set() for name in modules}
         external: set[str] = set()
         parse_errors: list[dict[str, Any]] = []
@@ -142,10 +139,18 @@ class AnalyzePythonModuleGraphTool:
                 continue
             except SyntaxError as exc:
                 parse_errors.append(
-                    {"path": relative.as_posix(), "line": exc.lineno, "message": redact(exc.msg)[:160]}
+                    {
+                        "path": relative.as_posix(),
+                        "line": exc.lineno,
+                        "message": redact(exc.msg)[:160],
+                    }
                 )
                 continue
-            package_parts = module_name.split(".") if relative.name == "__init__.py" else module_name.split(".")[:-1]
+            package_parts = (
+                module_name.split(".")
+                if relative.name == "__init__.py"
+                else module_name.split(".")[:-1]
+            )
             for node in ast.walk(tree):
                 imports: list[str] = []
                 if isinstance(node, ast.Import):
@@ -174,7 +179,9 @@ class AnalyzePythonModuleGraphTool:
                         graph[module_name].add(imported)
                     else:
                         top_level = imported.split(".", 1)[0]
-                        if not any(name == imported or name.startswith(imported + ".") for name in modules):
+                        if not any(
+                            name == imported or name.startswith(imported + ".") for name in modules
+                        ):
                             external.add(top_level)
 
         state: dict[str, int] = {}

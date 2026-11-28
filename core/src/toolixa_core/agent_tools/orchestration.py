@@ -119,7 +119,11 @@ class AnalyzeDeliveryPlanTool:
                                 "maxItems": 100,
                                 "items": {"type": "string", "minLength": 1, "maxLength": 120},
                             },
-                            "duration_hours": {"type": "number", "exclusiveMinimum": 0, "maximum": 10000},
+                            "duration_hours": {
+                                "type": "number",
+                                "exclusiveMinimum": 0,
+                                "maximum": 10000,
+                            },
                             "priority": {"type": "integer", "minimum": 1, "maximum": 5},
                             "owner": {"type": "string", "maxLength": 120},
                         },
@@ -175,9 +179,7 @@ class AnalyzeDeliveryPlanTool:
         for task_id in reversed(order):
             dependents = children[task_id]
             finish = (
-                min(latest_start[item] for item in dependents)
-                if dependents
-                else project_duration
+                min(latest_start[item] for item in dependents) if dependents else project_duration
             )
             latest_finish[task_id] = finish
             latest_start[task_id] = finish - duration[task_id]
