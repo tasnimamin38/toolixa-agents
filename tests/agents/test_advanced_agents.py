@@ -59,7 +59,7 @@ ADVANCED = {
     },
     "11-api-architect": {
         "id": "api-architect",
-        "tools": {"workspace.list_files", "workspace.read_file", "api.inspect_openapi_json"},
+        "tools": {"workspace.list_files", "workspace.read_file", "api.inspect_openapi_json", "api.compare_openapi_contracts"},
         "path": "api.inspect_openapi_json",
         "arguments": {"path": "openapi.json"},
         "fixture": "openapi",
