@@ -1,0 +1,2 @@
+# Install the shared runtime from the repository root:
+# python -m pip install -e "./core[runtime]"

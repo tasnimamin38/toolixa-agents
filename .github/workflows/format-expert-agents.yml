@@ -1,0 +1,118 @@
+name: Format and verify expert-agent development branch
+
+on:
+  push:
+    branches:
+      - feature/python-local-ai-gateway
+
+permissions:
+  contents: write
+
+concurrency:
+  group: format-python-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  format-and-verify:
+    if: ${{ !startsWith(github.event.head_commit.message, '[autoformat]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the development branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/python-local-ai-gateway
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install ephemeral formatting tools
+        run: python -m pip install autopep8==2.3.2 ruff
+
+      - name: Format only the expert-agent changes
+        shell: bash
+        run: |
+          FILES=(
+            agents/01-dev-copilot/main.py
+            agents/02-aegis-security/main.py
+            agents/03-task-orchestrator/main.py
+            agents/04-rag-chatbot/main.py
+            agents/05-content-maestro/main.py
+            agents/06-web-scraper/main.py
+            agents/07-software-engineer/main.py
+            agents/08-code-reviewer/main.py
+            agents/09-test-engineer/main.py
+            agents/10-data-analyst/main.py
+            agents/11-api-architect/main.py
+            agents/12-research-analyst/main.py
+            core/src/toolixa_core/agent_runtime_cli.py
+            core/src/toolixa_core/agent_tools/__init__.py
+            core/src/toolixa_core/agent_tools/api.py
+            core/src/toolixa_core/agent_tools/content.py
+            core/src/toolixa_core/agent_tools/data.py
+            core/src/toolixa_core/agent_tools/html.py
+            core/src/toolixa_core/agent_tools/orchestration.py
+            core/src/toolixa_core/agent_tools/python.py
+            core/src/toolixa_core/agent_tools/qa.py
+            core/src/toolixa_core/agent_tools/qa.py
+            core/src/toolixa_core/agent_tools/security.py
+            core/src/toolixa_core/runtime/agent.py
+            scripts/run_github_agent.py
+            tests/agents/test_expert_starter_agents.py
+            tests/agents/test_advanced_agents.py
+            tests/agents/test_github_agent_runner.py
+            tests/core/test_agent_runtime.py
+            tests/core/test_expert_domain_tools.py
+          )
+          autopep8 --in-place --aggressive --aggressive ${FILES[@]}
+          ruff check --fix --select I ${FILES[@]}
+          ruff format ${FILES[@]}
+
+      - name: Install project and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e './core[gateway,runtime]'
+          python -m pip install 'pytest>=9.0.3,<10' 'ruff>=0.8,<1'
+          python -m pip install -r agents/06-web-scraper/requirements.txt
+
+      - name: Compile all Python sources
+        run: python -m compileall -q core/src agents scripts tests
+
+      - name: Lint
+        run: ruff check core/src agents scripts tests
+
+      - name: Check formatting
+        run: ruff format --check core/src agents scripts tests
+
+      - name: Regenerate agent catalog from manifests
+        run: python scripts/build_catalog.py
+
+      - name: Validate generated agent catalog
+        run: python scripts/build_catalog.py --check
+
+      - name: Run full regression suite
+        run: python -m pytest -q
+
+      - name: Confirm patch whitespace
+        run: git diff --check
+
+      - name: Commit formatted files to this branch only
+        if: ${{ success() }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet; then
+            echo 'No formatting changes were necessary.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- core/src/toolixa_core/agent_tools/data.py core/src/toolixa_core/agent_tools/qa.py catalog/agents.json agents/01-dev-copilot/agent.json agents/02-aegis-security/agent.json agents/03-task-orchestrator/agent.json agents/04-rag-chatbot/agent.json agents/05-content-maestro/agent.json agents/06-web-scraper/agent.json agents/07-software-engineer/agent.json agents/08-code-reviewer/agent.json agents/09-test-engineer/agent.json agents/10-data-analyst/agent.json agents/11-api-architect/agent.json agents/12-research-analyst/agent.json agents/13-engineering-workflow/agent.json agents/01-dev-copilot/main.py agents/02-aegis-security/main.py agents/03-task-orchestrator/main.py agents/04-rag-chatbot/main.py agents/05-content-maestro/main.py agents/06-web-scraper/main.py agents/11-api-architect/main.py agents/07-software-engineer/main.py agents/08-code-reviewer/main.py agents/09-test-engineer/main.py agents/10-data-analyst/main.py agents/11-api-architect/main.py agents/12-research-analyst/main.py core/src/toolixa_core/agent_runtime_cli.py core/src/toolixa_core/agent_tools/__init__.py core/src/toolixa_core/agent_tools/api.py core/src/toolixa_core/agent_tools/content.py core/src/toolixa_core/agent_tools/data.py core/src/toolixa_core/agent_tools/html.py core/src/toolixa_core/agent_tools/orchestration.py core/src/toolixa_core/agent_tools/python.py core/src/toolixa_core/agent_tools/qa.py core/src/toolixa_core/agent_tools/security.py core/src/toolixa_core/runtime/agent.py scripts/run_github_agent.py tests/agents/test_expert_starter_agents.py tests/agents/test_advanced_agents.py tests/agents/test_github_agent_runner.py tests/core/test_agent_runtime.py tests/core/test_expert_domain_tools.py
+          git commit -m '[autoformat] normalize expert-agent Python sources'
+          git -c http.extraheader="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" push origin HEAD:feature/python-local-ai-gateway

@@ -1,0 +1,74 @@
+name: Run a registered Toolixa agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      agent_id:
+        description: Registered agent ID from catalog/agents.json
+        type: string
+        required: true
+      task:
+        description: Task for the selected expert agent (maximum 12000 characters)
+        type: string
+        required: true
+      max_steps:
+        description: Maximum model reasoning steps
+        type: choice
+        required: true
+        default: '12'
+        options: ['5', '10', '12', '20', '25']
+      max_tool_calls:
+        description: Maximum registered tool calls
+        type: choice
+        required: true
+        default: '12'
+        options: ['5', '10', '12', '20', '25']
+      max_wall_seconds:
+        description: Overall execution budget in seconds
+        type: choice
+        required: true
+        default: '120'
+        options: ['30', '60', '90', '120', '180']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: toolixa-agent-run-${{ github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  run-agent:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Check out the reviewed main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install Toolixa runtime dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e './core[runtime]'
+          python -m pip install -r agents/06-web-scraper/requirements.txt
+
+      - name: Run registered agent with bounded read-only permissions
+        env:
+          TOOLIXA_GATEWAY_URL: ${{ vars.TOOLIXA_GATEWAY_URL }}
+          TOOLIXA_MODEL: ${{ vars.TOOLIXA_MODEL }}
+          TOOLIXA_API_KEY: ${{ secrets.TOOLIXA_API_KEY }}
+          TOOLIXA_RUN_AGENT_ID: ${{ inputs.agent_id }}
+          TOOLIXA_RUN_TASK: ${{ inputs.task }}
+          TOOLIXA_MAX_STEPS: ${{ inputs.max_steps }}
+          TOOLIXA_MAX_TOOL_CALLS: ${{ inputs.max_tool_calls }}
+          TOOLIXA_MAX_WALL_SECONDS: ${{ inputs.max_wall_seconds }}
+        run: python scripts/run_github_agent.py

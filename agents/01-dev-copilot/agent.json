@@ -2,16 +2,20 @@
   "schema_version": 1,
   "id": "dev-copilot",
   "name": "Dev Copilot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "category": "development",
-  "description": "Read-only Python workspace inventory and syntax analysis; never edits files or runs code.",
+  "description": "Model-driven principal engineering copilot for repository mapping, cross-file investigation, Python AST and module-dependency analysis, Git diff interpretation and evidence-backed implementation planning. Read-only; does not edit files, execute code or run tests.",
   "entrypoint": "main.py",
   "python": ">=3.11",
   "dependencies": [],
   "capabilities": [
-    "workspace_inventory",
-    "python_syntax_check",
-    "read_only_analysis"
+    "repository_inventory",
+    "cross_file_search",
+    "python_ast_inspection",
+    "python_module_dependency_graph",
+    "git_diff_analysis",
+    "implementation_planning",
+    "evidence_cited_findings"
   ],
   "permissions": [
     "workspace.read"

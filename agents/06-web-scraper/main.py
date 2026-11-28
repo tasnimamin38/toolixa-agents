@@ -9,6 +9,10 @@ from urllib.parse import urljoin, urlsplit
 
 from bs4 import BeautifulSoup
 
+from toolixa_core.agent_runtime_cli import run_agent_cli
+from toolixa_core.agent_tools import CrawlLocalHTMLSiteTool, ExtractHTMLFileTool
+from toolixa_core.runtime.agent import AgentDefinition
+
 
 def extract_html(
     html: str, *, base_url: str | None = None, max_links: int = 200
@@ -86,5 +90,21 @@ def main() -> None:
     )
 
 
+def build_agent() -> AgentDefinition:
+    return AgentDefinition(
+        id="web-scraper",
+        name="Web Scraper",
+        system_prompt=(
+            "You are a web-document extraction and information-architecture specialist. Inspect supplied local HTML "
+            "files and bounded local static-site snapshots; extract metadata, canonical references, heading hierarchy, links and internal page graphs, then "
+            "summarize page intent, navigation patterns and extraction gaps. Use only local HTML extraction and bounded offline crawl tools. "
+            "It performs zero network requests; do not claim that any URL was fetched, crawled, rendered, authenticated "
+            "or verified online. Never follow links or bypass access controls."
+        ),
+        tools=(ExtractHTMLFileTool(), CrawlLocalHTMLSiteTool()),
+        min_tool_calls=1,
+    )
+
+
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_agent_cli(build_agent(), description=__doc__ or "06-web-scraper"))

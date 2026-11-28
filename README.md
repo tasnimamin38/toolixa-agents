@@ -16,7 +16,7 @@
     <a href="https://toolixa-agents.vercel.app/">Live Agent Directory</a> ·
     <a href="#architecture">Architecture</a> ·
     <a href="#quick-start">Quick start</a> ·
-    <a href="https://github.com/tasnimamin38/toolixa-agents/blob/feature/python-local-ai-gateway/docs/gateway-guide.md">Gateway guide</a> ·
+    <a href="https://github.com/tasnimamin38/toolixa-agents/blob/main/docs/gateway-guide.md">Gateway guide</a> ·
     <a href="#roadmap">Roadmap</a>
   </p>
 </div>
@@ -38,22 +38,26 @@ Toolixa Agents is evolving from a static agent directory and Python starter SDK 
 ## Current project status
 
 <div align="center">
-  <h3>EXPERIMENTAL FOUNDATION · GATEWAY ALPHA UNDER REVIEW</h3>
-  <p><strong>Gateway implementation submitted · PR checks passing · independent security review pending</strong></p>
+  <h3>EXPERIMENTAL MODEL-DRIVEN AGENT ALPHA · REVIEW PENDING</h3>
+  <p><strong>Bounded tool-calling runtime · 13 agents · fixed engineering workflow · independent security review pending</strong></p>
 </div>
 
-**Important release distinction:** the six-agent foundation and static directory are on `main`. The Local AI Gateway implementation is currently on the Draft [Pull Request #1](https://github.com/tasnimamin38/toolixa-agents/pull/1), branch `feature/python-local-ai-gateway`. It has passed Windows/Python 3.11 checks and the GitHub CI and dependency-audit workflows, but it has not yet been merged into `main` or deployed as a hosted backend.
+**Main-branch rule:** `main` is the canonical integration branch. All work in this upgrade is maintained on a branch descended from `main` and reviewed through Draft [Pull Request #1](https://github.com/tasnimamin38/toolixa-agents/pull/1). The 13-agent capability upgrade, advanced shared tools, Gateway and GitHub-hosted runner are **not merged or deployed to the live site** until that PR is reviewed and merged.
+
+The current feature branch upgrades the six original starters into the shared model-driven runtime, retains six domain specialists and the fixed three-stage engineering workflow, and adds a catalogue-bound GitHub Actions runner. Every model-driven agent requires at least one successful registered tool call before it can report success. The latest verified GitHub-hosted suite passed 112 tests; the independent security review and actual remote-model invocation remain outstanding.
 
 | Area | Current state |
 |---|---|
-| Static Agent Directory | Deployed on Vercel |
-| Python core contracts and safety primitives | Experimental foundation on `main` |
-| Six bounded starter agents | Experimental on `main` |
-| Local browser-based AI Gateway | Implemented on Draft PR #1 |
-| OpenAI Chat Completions-compatible provider routing | Implemented on Draft PR #1 |
-| Native vendor protocols and MCP tool execution | Planned — Phase 2 |
-| Real multi-agent runtime and isolated execution | Planned — Phase 3 |
-| Production hardening and hosted multi-user SaaS | Not started — later phases |
+| Canonical integration branch | `main` |
+| Expert-agent upgrade | Draft PR #1, descended from `main` |
+| Shared model-driven runtime and evidence gate | Draft PR #1 |
+| 13 catalogued agent definitions | Draft PR #1 |
+| Advanced domain-analysis tools | Draft PR #1 |
+| Manual GitHub-hosted Agent runner | Draft PR #1; requires a remote HTTPS BYOK endpoint |
+| Local AI Gateway | Draft PR #1; single-user loopback alpha |
+| Write/execute sandbox | Not enabled |
+| Independent security review | Pending |
+| Production multi-user SaaS | Not started |
 
 This is **not production-ready software**. The gateway is a single-user, loopback-only local alpha. Do not expose it to the public internet or use it as an unreviewed executor for untrusted code.
 
@@ -76,8 +80,8 @@ This is **not production-ready software**. The gateway is a single-user, loopbac
   </tr>
   <tr>
     <td valign="top">
-      <h3>04 · Starter agents</h3>
-      Six separately documented Python agents with bounded, inspectable behavior.
+      <h3>04 · Thirteen agents</h3>
+      Six bounded starters, six model-driven specialists and one fixed multi-agent engineering workflow.
     </td>
     <td valign="top">
       <h3>05 · Provider flexibility</h3>
@@ -90,22 +94,35 @@ This is **not production-ready software**. The gateway is a single-user, loopbac
   </tr>
 </table>
 
-## Agent directory
+## Expert agent directory
 
-| Agent | Current capability | Important boundary |
+All 12 specialist agents use the same model-driven runtime and require at least one successful registered tool call before reporting success. The thirteenth entry is a fixed sequential workflow over three real specialists. Agent definitions, registered tools, catalog metadata and tests are kept together in this repository.
+
+| Agent | Expert task capability | Current hard boundary |
 |---|---|---|
-| **Dev Copilot** | Read-only Python workspace inspection and AST analysis | Does not execute or modify code |
-| **Aegis Security** | Passive local secret-pattern and risky-code checks | Not an active scanner or penetration tester |
-| **Task Orchestrator** | Deterministic task dependency ordering | Does not launch autonomous sub-agents |
-| **RAG Chatbot** | Local Markdown/text retrieval with source line ranges | Lexical retrieval, not vector/embedding search |
-| **Content Maestro** | Structured editorial brief and research checklist | Does not perform live web research |
-| **Web Scraper** | Parse supplied local HTML into metadata, headings and links | No remote crawling or arbitrary HTTP fetching |
+| **Dev Copilot** | Repository mapping, cross-file search, Python AST/module graph analysis, Git diff interpretation and implementation planning | Read-only; no edits, shell or code execution |
+| **Aegis Security** | Passive secret-pattern and Python AST security analysis, including unsafe deserialization, shell execution and weak crypto patterns | Not an active scanner, exploit tool or penetration test |
+| **Task Orchestrator** | Complex task decomposition, dependency DAG validation, critical-path schedule, slack and owner workload analysis | Plans only; does not execute or spawn agents |
+| **RAG Chatbot** | Local document retrieval, multi-source synthesis and exact file/line citations | Lexical retrieval; no embeddings/vector index or web search |
+| **Content Maestro** | Editorial strategy, local-source coverage, script timeline, hook cadence and CTA checks | Does not fetch external sources or predict real audience retention |
+| **Web Scraper** | Local HTML extraction and bounded multi-page crawling of an offline snapshot, including internal link graphs | Zero network requests; not a live web crawler |
+| **Software Engineer** | Architecture mapping, source tracing, Python AST/module inspection, Git diff and implementation/migration plans | Does not apply patches or execute code |
+| **Code Reviewer** | Independent diff review, correctness/security/reliability risk ranking and test-gap analysis | Does not modify code or run tests |
+| **Test Engineer** | Source-to-test mapping, pytest scenario design, fixtures, edge cases and regression strategy | Does not create or execute tests |
+| **Data Analyst** | Bounded CSV profiling, types, missingness, duplicates and descriptive statistics | No raw-row export or data mutation |
+| **API Architect** | OpenAPI 3.x JSON inspection, operation/schema inventory and backwards-compatibility comparison | No remote calls, YAML parsing or `$ref` dereferencing |
+| **Research Analyst** | Local-document evidence retrieval, contradiction analysis, synthesis and source/line citations | No public internet browsing |
+| **Engineering Workflow** | Fixed Software Engineer → Code Reviewer → Test Engineer sequence with shared budgets and evidence handoffs | Read-only, fixed order; no dynamic spawning |
 
-Browse the [live directory](https://toolixa-agents.vercel.app/) or inspect each agent under `agents/`.
+### GitHub-hosted agent execution
+
+The feature branch includes a manual Actions workflow that runs a selected catalogue Agent on a fresh GitHub-hosted runner. It is restricted to the reviewed `main` ref, grants only registered read capabilities, and never runs on pull-request jobs with provider secrets. Configure a remote HTTPS OpenAI Chat Completions-compatible endpoint with repository Variables `TOOLIXA_GATEWAY_URL`, `TOOLIXA_MODEL` and Secret `TOOLIXA_API_KEY` after the feature is merged. A laptop `localhost` Gateway is deliberately rejected.
+
+See the [GitHub Cloud Runner guide](docs/github-cloud-runner-guide.md) for setup, workflow inputs, security limits and troubleshooting. The live Vercel directory remains unchanged until the Draft PR is merged and deployed.
 
 ## Architecture
 
-The diagram shows the Local AI Gateway implemented on Draft PR #1. The six-agent foundation is on `main`; automatic agent-to-gateway wiring and the MCP tool bridge remain future integrations.
+The diagram shows the Gateway and model-driven specialist runtime on Draft PR #1. The six-agent foundation is on `main`; MCP, browser automation and isolated write/execute tools remain future integrations.
 
 ```mermaid
 flowchart LR
@@ -123,8 +140,9 @@ flowchart LR
     API --> ROUTER["Provider HTTP adapter"]
     ROUTER --> MODEL["Your configured model endpoint"]
 
-    AGENT["Six bounded starter agents"] -. "future model wiring" .-> API
-    MCP["MCP servers and tools"] -. "Phase 2" .-> API
+    RUNTIME["ToolAgent runtime"] --> API
+    TOOLS["13 agents · registered read-only tools"] --> RUNTIME
+    MCP["MCP servers and tools"] -. "future Phase 2" .-> RUNTIME
 ```
 
 ### Local gateway request flow
@@ -150,7 +168,7 @@ The Local AI Gateway adapter on Draft PR #1 supports the **OpenAI Chat Completio
 | Native Anthropic / Gemini APIs | Planned dedicated adapters |
 | MCP servers | Planned Python MCP client and permission-aware tool bridge |
 
-See [Provider and Gateway setup](https://github.com/tasnimamin38/toolixa-agents/blob/feature/python-local-ai-gateway/docs/gateway-guide.md) for endpoint requirements and limitations.
+See [Provider and Gateway setup](https://github.com/tasnimamin38/toolixa-agents/blob/main/docs/gateway-guide.md) for endpoint requirements and limitations.
 
 ## Quick start
 
@@ -182,17 +200,14 @@ Each agent has its own README, manifest and dependency file. Review its exact sc
 
 ### 3. Run the Local AI Gateway
 
-The gateway is currently available on [Draft PR #1](https://github.com/tasnimamin38/toolixa-agents/pull/1), not on the default `main` branch yet. To try that version, clone the feature branch:
+The gateway and specialist runtime are currently on [Draft PR #1](https://github.com/tasnimamin38/toolixa-agents/pull/1), not on the default `main` branch yet. From the repository you already cloned in step 1, switch to the feature branch and install both optional extras:
 
 ```powershell
-git clone --branch feature/python-local-ai-gateway https://github.com/tasnimamin38/toolixa-agents.git
-cd toolixa-agents
-
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+git fetch origin feature/python-local-ai-gateway
+git switch feature/python-local-ai-gateway
 
 python -m pip install --upgrade pip
-python -m pip install -e ".\core[gateway]"
+python -m pip install -e ".\core[gateway,runtime]"
 python -m toolixa_core.gateway
 ```
 
@@ -200,15 +215,44 @@ The terminal prints a one-time dashboard password. Open `http://127.0.0.1:20128`
 
 The gateway binds to loopback only. **Do not port-forward, tunnel or reverse-proxy this experimental service to the public internet.**
 
+### 4. Run an advanced model-driven specialist
+
+Install the optional runtime extra and set the Toolixa Gateway key and chosen namespaced model in PowerShell:
+
+```powershell
+python -m pip install -e ".\\core[runtime]"
+
+$env:TOOLIXA_GATEWAY_URL = "http://127.0.0.1:20128/v1"
+$env:TOOLIXA_API_KEY = "YOUR_TOOLIXA_GATEWAY_KEY"
+$env:TOOLIXA_MODEL = "provider-id/model-id"
+
+python agents/07-software-engineer/main.py "Map this codebase and propose a safe refactor" --workspace C:\\path\\to\\repo --grant workspace.read
+```
+
+Choose a model that supports function/tool calling. The API key is a Toolixa Gateway client key, not the upstream provider key. The Gateway keeps the upstream key in its encrypted local vault. See the [Advanced Specialist Agents guide](https://github.com/tasnimamin38/toolixa-agents/blob/main/docs/advanced-agents-guide.md).
+
 ## Security and credential handling
 
 - Provider API keys are encrypted in the local SQLite store. The vault key is kept separately in the user's application-data directory.
 - Toolixa API keys are displayed once and stored as hashes.
 - The dashboard is protected by a local password and a signed session cookie.
 - The local gateway rejects non-loopback plaintext HTTP endpoints and does not follow provider redirects.
+- The specialist runtime validates tool schemas, enforces explicit workspace.read grants and applies request step/tool/wall-time budgets.
+- Advanced agents are read-only: no source writes, arbitrary shell, test execution, browser automation, internet fetches or MCP tool invocation.
+- The only multi-agent coordination is the fixed Engineer → Reviewer → Test Engineer workflow; it shares one budget and cannot spawn or reorder agents.
 - No real provider key or paid model request is required for installation or automated tests.
 - The gateway has not yet completed an independent penetration test or full production web-security review.
 - A configured provider receives the prompts and conversation data sent to it. Review that provider's privacy, retention and billing terms.
+
+### 5. Run the Engineering Workflow Orchestrator
+
+This runs the existing three engineering specialists in order. Set the Gateway environment variables from step 4 first:
+
+```powershell
+python agents/13-engineering-workflow/main.py "Review the payments service and propose the safest reliability improvement" --workspace C:\\path\\to\\repo --grant workspace.read
+```
+
+The final JSON contains the Software Engineer analysis, independent Code Reviewer findings, Test Engineer plan and one aggregate budget report. Every stage must use a real read-only tool. The workflow stops on stage failure or exhausted budget; it does not change source files or run tests. See the [Engineering Workflow guide](docs/engineering-workflow-guide.md).
 
 Read the [Security Model](docs/security-model.md) before connecting credentials or enabling any additional capabilities.
 
@@ -217,9 +261,9 @@ Read the [Security Model](docs/security-model.md) before connecting credentials 
 | Phase | Objective | Status |
 |---|---|---|
 | **0 · Foundation** | Python core, six bounded starter agents, static directory, CI | <strong>Completed</strong> |
-| **1 · Local Gateway** | Browser dashboard, encrypted BYOK store, compatible provider API | <strong>Implemented on Draft PR #1; review pending</strong> |
-| **2 · Native AI + MCP** | Native provider adapters, MCP registration/discovery, permission-gated tool calls | Planned |
-| **3 · Agent Runtime** | Per-agent model selection, multi-agent orchestration, persistent memory, isolated tools | Planned |
+| **1 · Gateway + Specialist Runtime** | Encrypted BYOK Gateway, model tool-call runtime, six advanced specialists and fixed engineering workflow | <strong>Draft PR #1; validation and security review pending</strong> |
+| **2 · Native AI + MCP** | Native provider adapters, MCP registration/discovery and permission-gated tool calls | Planned |
+| **3 · Advanced Agent Runtime** | Multi-agent delegation, persistent memory, browser integration and reviewed patch/execute sandbox | Planned |
 | **4 · Production Gate** | Threat-model review, penetration testing, rate limits, audit, egress and operational controls | Not started |
 | **5 · Hosted Service** | Optional multi-user SaaS, tenant isolation, remote secrets, quotas and billing | Not started |
 
@@ -245,7 +289,7 @@ python scripts/build_catalog.py --check
 python -m pytest -q
 ```
 
-To run the Local AI Gateway preview, first check out the feature branch using the instructions above, then install `python -m pip install -e "./core[gateway]"`. Gateway contract tests use mocked upstream responses and do not make paid provider calls.
+To run the Local AI Gateway and model-driven specialists, first check out the feature branch using the instructions above, then install `python -m pip install -e "./core[gateway,runtime]"`. Gateway and workflow contract tests use mocked upstream responses and do not make paid provider calls.
 
 ## Documentation
 
@@ -253,11 +297,17 @@ To run the Local AI Gateway preview, first check out the feature branch using th
 |---|---|
 | [Architecture](docs/architecture.md) | Components, boundaries and data flow |
 | [Security Model](docs/security-model.md) | Permissions, secrets, execution and threats |
-| [Gateway Guide](https://github.com/tasnimamin38/toolixa-agents/blob/feature/python-local-ai-gateway/docs/gateway-guide.md) | Local dashboard, providers and compatible API (Draft PR #1) |
+| [Gateway Guide](https://github.com/tasnimamin38/toolixa-agents/blob/main/docs/gateway-guide.md) | Local dashboard, providers and compatible API (Draft PR #1) |
 | [BYOR / BYOK Guide](docs/byor-guide.md) | Runtime and credentials ownership |
 | [Installation](docs/installation.md) | Install and launch |
 | [Development](docs/development.md) | Tests, lint, CI and contribution workflow |
-| [Implementation Plan](docs/plans/2026-11-27-toolixa-agents-implementation.md) | Phase-by-phase acceptance gates |
+| [Advanced Specialist Agents](https://github.com/tasnimamin38/toolixa-agents/blob/main/docs/advanced-agents-guide.md) | Model setup, tool capabilities, PowerShell usage and limits |
+| [Engineering Workflow](docs/engineering-workflow-guide.md) | Fixed three-stage handoffs, shared budget, CLI and security boundaries |
+| [Workflow Design](docs/specs/2026-11-28-multi-agent-engineering-workflow-design.md) | Workflow contract, handoffs, trust and release limits |
+| [Workflow Implementation Plan](docs/plans/2026-11-28-multi-agent-engineering-workflow.md) | Test-first tasks and release gates |
+| [Advanced Runtime Design](https://github.com/tasnimamin38/toolixa-agents/blob/main/docs/specs/2026-11-27-advanced-agent-runtime-design.md) | Shared runtime, tool policies and test boundaries |
+| [Advanced Runtime Plan](https://github.com/tasnimamin38/toolixa-agents/blob/main/docs/plans/2026-11-27-advanced-agent-runtime.md) | Implementation tasks and release gates |
+| [Foundation Plan](docs/plans/2026-11-27-toolixa-agents-implementation.md) | Original six-agent foundation plan |
 
 ## License
 

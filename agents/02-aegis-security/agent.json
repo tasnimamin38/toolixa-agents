@@ -2,16 +2,19 @@
   "schema_version": 1,
   "id": "aegis-security",
   "name": "Aegis Security",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "category": "security",
-  "description": "Local passive source inspection for potential hard-coded secrets and risky Python patterns.",
+  "description": "Model-driven passive application-security analyst combining bounded credential-pattern scans and Python AST rules for dynamic evaluation, unsafe deserialization, subprocess shell use, insecure temporary files, weak hashes and disabled TLS verification. Findings are location-based and redacted; this is not an active scanner or penetration test.",
   "entrypoint": "main.py",
   "python": ">=3.11",
   "dependencies": [],
   "capabilities": [
     "passive_secret_pattern_scan",
-    "python_risk_pattern_scan",
-    "redacted_findings"
+    "python_security_ast_analysis",
+    "unsafe_deserialization_detection",
+    "shell_execution_pattern_detection",
+    "tls_and_weak_hash_checks",
+    "redacted_location_based_findings"
   ],
   "permissions": [
     "workspace.read",

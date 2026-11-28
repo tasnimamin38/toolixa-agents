@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "data-analyst",
+  "name": "Data Analyst",
+  "version": "0.3.0",
+  "category": "data",
+  "description": "Model-driven data-quality analyst for bounded CSV profiling and before/after dataset comparison. Measures schema/type changes, missingness, duplicate and missing keys, key overlap and numeric mean drift while suppressing sensitive-column statistics and raw rows.",
+  "entrypoint": "main.py",
+  "python": ">=3.11",
+  "dependencies": [],
+  "capabilities": [
+    "csv_schema_profiling",
+    "before_after_dataset_comparison",
+    "schema_and_type_drift_detection",
+    "missingness_and_duplicate_key_analysis",
+    "key_overlap_and_coverage",
+    "numeric_mean_drift",
+    "sensitive_column_suppression",
+    "data_quality_limitations"
+  ],
+  "permissions": [
+    "workspace.read"
+  ],
+  "status": "experimental",
+  "documentation": "README.md"
+}

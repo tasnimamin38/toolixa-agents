@@ -5,6 +5,16 @@ from __future__ import annotations
 import argparse
 import json
 
+from toolixa_core.agent_runtime_cli import run_agent_cli
+from toolixa_core.agent_tools import (
+    AnalyzeScriptTimelineTool,
+    ListWorkspaceFilesTool,
+    ReadWorkspaceFileTool,
+    SearchLocalDocsTool,
+    ValidateEditorialBriefTool,
+)
+from toolixa_core.runtime.agent import AgentDefinition
+
 
 def build_brief(
     topic: str, *, audience: str = "general", content_format: str = "article"
@@ -70,5 +80,29 @@ def main() -> None:
     )
 
 
+def build_agent() -> AgentDefinition:
+    return AgentDefinition(
+        id="content-maestro",
+        name="Content Maestro",
+        system_prompt=(
+            "You are a senior editorial strategist and fact-checking producer. Build a complete content package "
+            "for the requested audience and format: audience insight, differentiated angles, narrative arc, section "
+            "outline, retention/re-engagement beats, a timestamped hook cadence validated by the timeline analyzer, visual suggestions and a practical CTA. Search local source "
+            "documents and cite factual claims with exact file/line evidence. Use the editorial brief validator to "
+            "identify unsupported claims and malformed source references. The validator checks structure only; it "
+            "does not fetch sources or prove factual accuracy. Clearly label unverified claims and never invent "
+            "statistics, quotations, source reviews or current facts."
+        ),
+        tools=(
+            ListWorkspaceFilesTool(),
+            ReadWorkspaceFileTool(),
+            SearchLocalDocsTool(),
+            ValidateEditorialBriefTool(),
+            AnalyzeScriptTimelineTool(),
+        ),
+        min_tool_calls=1,
+    )
+
+
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_agent_cli(build_agent(), description=__doc__ or "05-content-maestro"))

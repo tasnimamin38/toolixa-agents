@@ -2,16 +2,19 @@
   "schema_version": 1,
   "id": "rag-chatbot",
   "name": "RAG Chatbot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "category": "knowledge",
-  "description": "Indexes local Markdown and text documents and retrieves passages with exact source line ranges.",
+  "description": "Evidence-grounded local knowledge agent that inventories and searches Markdown/text sources, retrieves bounded passages and synthesizes multi-part answers with source paths and line ranges. Current retrieval is lexical rather than embedding/vector retrieval; no web search or persistent vector index is claimed.",
   "entrypoint": "main.py",
   "python": ">=3.11",
   "dependencies": [],
   "capabilities": [
-    "local_text_ingestion",
-    "keyword_retrieval",
-    "source_line_citations"
+    "local_document_inventory",
+    "lexical_retrieval",
+    "multi_query_evidence_synthesis",
+    "source_line_citations",
+    "contradiction_and_gap_reporting",
+    "untrusted_context_handling"
   ],
   "permissions": [
     "workspace.read"

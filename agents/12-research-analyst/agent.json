@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "research-analyst",
+  "name": "Research Analyst",
+  "version": "0.1.0",
+  "category": "research",
+  "description": "Evidence-first local-document research that searches Markdown/text sources and synthesizes answers with exact file and line citations.",
+  "entrypoint": "main.py",
+  "python": ">=3.11",
+  "dependencies": [],
+  "capabilities": [
+    "local_document_search",
+    "source_line_citations",
+    "evidence_synthesis",
+    "contradiction_detection",
+    "research_gap_reporting"
+  ],
+  "permissions": [
+    "workspace.read"
+  ],
+  "status": "experimental",
+  "documentation": "README.md"
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "test-engineer",
+  "name": "Test Engineer",
+  "version": "0.3.0",
+  "category": "quality",
+  "description": "Model-driven test architect that statically maps Python source symbols to pytest test functions, identifies likely uncovered symbols, inspects source/test evidence and creates risk-weighted test plans with fixtures, edge cases and regression acceptance criteria. Does not execute tests or measure runtime coverage.",
+  "entrypoint": "main.py",
+  "python": ">=3.11",
+  "dependencies": [],
+  "capabilities": [
+    "python_source_to_test_mapping",
+    "static_test_reference_coverage_estimation",
+    "uncovered_symbol_detection",
+    "pytest_scenario_design",
+    "fixture_and_edge_case_planning",
+    "risk_weighted_regression_strategy",
+    "failure_and_boundary_test_design"
+  ],
+  "permissions": [
+    "workspace.read"
+  ],
+  "status": "experimental",
+  "documentation": "README.md"
+}

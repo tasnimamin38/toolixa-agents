@@ -7,6 +7,10 @@ import json
 from collections import deque
 from typing import Any
 
+from toolixa_core.agent_runtime_cli import run_agent_cli
+from toolixa_core.agent_tools import AnalyzeDeliveryPlanTool, ValidateTaskGraphTool
+from toolixa_core.runtime.agent import AgentDefinition
+
 
 def order_tasks(tasks: list[dict[str, Any]], *, max_tasks: int = 100) -> list[str]:
     if len(tasks) > max_tasks:
@@ -69,5 +73,22 @@ def main() -> None:
     print(json.dumps(result, indent=2))
 
 
+def build_agent() -> AgentDefinition:
+    return AgentDefinition(
+        id="task-orchestrator",
+        name="Task Orchestrator",
+        system_prompt=(
+            "You are a principal delivery architect. Decompose complex objectives into bounded, verifiable work "
+            "packages with dependencies, acceptance criteria, owners/roles, risk gates and rollback points. Use the "
+            "task-graph validator on the proposed dependency DAG, then revise any invalid graph. Identify critical "
+            "path, parallelizable work, schedule slack, owner workload and blocked prerequisites. "
+            "Use the schedule analyzer to calculate a deterministic critical path. You may plan delegation but must not launch agents, "
+            "grant permissions, execute tasks or imply work has been performed."
+        ),
+        tools=(ValidateTaskGraphTool(), AnalyzeDeliveryPlanTool()),
+        min_tool_calls=1,
+    )
+
+
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_agent_cli(build_agent(), description=__doc__ or "03-task-orchestrator"))
