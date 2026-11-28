@@ -7,9 +7,11 @@ import pytest
 
 from toolixa_core.agent_tools.api import CompareOpenAPIContractsTool
 from toolixa_core.agent_tools.content import AnalyzeScriptTimelineTool
+from toolixa_core.agent_tools.data import CompareCSVDatasetsTool
 from toolixa_core.agent_tools.html import CrawlLocalHTMLSiteTool
 from toolixa_core.agent_tools.orchestration import AnalyzeDeliveryPlanTool
 from toolixa_core.agent_tools.python import AnalyzePythonModuleGraphTool
+from toolixa_core.agent_tools.qa import MapPythonTestCoverageTool
 from toolixa_core.agent_tools.security import PythonSecurityASTTool
 from toolixa_core.security.policy import RuntimePolicy
 from toolixa_core.tools.base import ToolCallContext
@@ -266,3 +268,109 @@ def test_python_module_graph_detects_local_import_cycle_and_external_modules(tmp
     assert result["cycle_count"] == 1
     assert {"package.alpha", "package.beta"}.issubset(set(result["cycles"][0]))
     assert "json" in result["external_imports"]
+
+
+
+def test_csv_comparator_reports_schema_key_quality_and_numeric_drift(tmp_path: Path):
+    root = tmp_path / "workspace"
+    root.mkdir()
+    (root / "before.csv").write_text(
+        "id,revenue,status,card_number\n"
+        "1,10,active,4111111111111111\n"
+        "2,20,inactive,5555555555554444\n"
+        "3,30,active,4000000000000002\n",
+        encoding="utf-8",
+    )
+    (root / "after.csv").write_text(
+        "id,revenue,status,region,card_number\n"
+        "1,15,active,west,4111111111111111\n"
+        "2,35,pending,east,5555555555554444\n"
+        "4,40,active,north,4000000000000002\n",
+        encoding="utf-8",
+    )
+
+    result = CompareCSVDatasetsTool().invoke(
+        {
+            "before_path": "before.csv",
+            "after_path": "after.csv",
+            "key_columns": ["id"],
+        },
+        context(root),
+    )
+
+    assert result["before_rows_profiled"] == 3
+    assert result["after_rows_profiled"] == 3
+    assert result["added_columns"] == ["region"]
+    assert result["removed_columns"] == []
+    assert result["matched_key_rows"] == 2
+    assert result["before_only_key_rows"] == 1
+    assert result["after_only_key_rows"] == 1
+    revenue = result["numeric_drift"]["revenue"]
+    assert revenue["before_mean"] == 20.0
+    assert revenue["after_mean"] == 30.0
+    assert revenue["relative_change_percent"] == 50.0
+    assert result["sensitive_columns"]["card_number"]["statistics_suppressed"] is True
+    serialized = json.dumps(result)
+    assert "4111111111111111" not in serialized
+    assert "5555555555554444" not in serialized
+
+
+def test_csv_comparator_rejects_missing_and_duplicate_key_columns(tmp_path: Path):
+    root = tmp_path / "workspace"
+    root.mkdir()
+    (root / "before.csv").write_text("id,value\n1,2\n", encoding="utf-8")
+    (root / "after.csv").write_text("id,value\n1,3\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="key column"):
+        CompareCSVDatasetsTool().invoke(
+            {"before_path": "before.csv", "after_path": "after.csv", "key_columns": ["absent"]},
+            context(root),
+        )
+
+
+def test_test_coverage_mapper_maps_source_symbols_to_test_evidence_and_gaps(tmp_path: Path):
+    root = tmp_path / "workspace"
+    (root / "app").mkdir(parents=True)
+    (root / "tests").mkdir()
+    (root / "app" / "__init__.py").write_text("", encoding="utf-8")
+    (root / "app" / "payments.py").write_text(
+        "class PaymentService:\n"
+        "    def charge(self, amount):\n"
+        "        return amount\n"
+        "\n"
+        "def calculate_fee(amount):\n"
+        "    return amount * 0.02\n",
+        encoding="utf-8",
+    )
+    (root / "app" / "refunds.py").write_text(
+        "def issue_refund(payment_id):\n"
+        "    return payment_id\n",
+        encoding="utf-8",
+    )
+    (root / "tests" / "test_payments.py").write_text(
+        "from app.payments import PaymentService, calculate_fee\n"
+        "\n"
+        "def test_calculate_fee():\n"
+        "    assert calculate_fee(100) == 2\n"
+        "\n"
+        "def test_charge():\n"
+        "    assert PaymentService().charge(10) == 10\n",
+        encoding="utf-8",
+    )
+
+    result = MapPythonTestCoverageTool().invoke({"max_files": 100}, context(root))
+
+    symbols = {
+        (item["path"], item["symbol"]): item
+        for item in result["symbols"]
+    }
+    fee = symbols[("app/payments.py", "calculate_fee")]
+    charge = symbols[("app/payments.py", "PaymentService.charge")]
+    refund = symbols[("app/refunds.py", "issue_refund")]
+    assert fee["tests"] == ["tests/test_payments.py::test_calculate_fee"]
+    assert charge["tests"] == ["tests/test_payments.py::test_charge"]
+    assert fee["coverage_state"] == "test_reference_found"
+    assert refund["coverage_state"] == "no_test_reference_found"
+    assert result["source_symbol_count"] == 3
+    assert result["symbols_without_test_reference"] == 1
+    assert result["tests_executed"] is False
