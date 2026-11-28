@@ -2,7 +2,7 @@
 
 **Release:** Experimental alpha on the feature/python-local-ai-gateway branch.
 
-The six advanced specialists share one Python tool-calling runtime. They register real read-only tools, validate model arguments against JSON schemas, require the request's workspace.read grant and return structured evidence. Provider calls go through your local Toolixa Gateway.
+The twelve specialist agents share one Python tool-calling runtime. Every model-driven specialist declares real domain tools, validates tool arguments against JSON schemas, requires the request's explicit permission grants, applies execution budgets and requires at least one successful tool call before reporting success. The thirteenth catalogue entry is the fixed Engineer → Reviewer → Test Engineer workflow. For the GitHub-only development path, run verification and agent execution on GitHub-hosted runners; do not create a local project environment.
 
 ## Prerequisites
 
@@ -27,7 +27,7 @@ $env:TOOLIXA_MODEL = "provider-id/model-id"
 
 Use the exact model ID displayed by the Gateway. The model must support tool calling. No upstream provider key is passed to the agent; the Gateway looks it up in its encrypted local store.
 
-## Six advanced specialists
+## Specialist portfolio
 
 | Agent | Real tools | Main output |
 |---|---|---|
@@ -35,12 +35,12 @@ Use the exact model ID displayed by the Gateway. The model must support tool cal
 | Code Reviewer | Git diff, file reader, search, Python AST | prioritized findings with file/line evidence |
 | Test Engineer | file inventory, file reader, search, Python AST | pytest strategy, missing cases, fixtures and expected assertions |
 | Data Analyst | file inventory, file reader, CSV profiler | descriptive statistics and data-quality findings |
-| API Architect | file inventory, file reader, OpenAPI 3.x JSON inspector | endpoint/schema inventory and integration architecture |
+| API Architect | file inventory, file reader, OpenAPI 3.x JSON inspector, OpenAPI contract comparer | endpoint/schema inventory, backwards-incompatible change findings and integration architecture |
 | Research Analyst | file inventory, file reader, local-document search | evidence-based brief with local file and line citations |
 
 ## Engineering Workflow Orchestrator
 
-The thirteenth agent runs the three engineering specialists in one fixed workflow:
+The Engineering Workflow entry runs the three engineering specialists in one fixed workflow:
 
 1. Software Engineer — project inventory and implementation analysis.
 2. Code Reviewer — independent review of the workspace and Engineer's claims.
@@ -56,7 +56,11 @@ All stages use the same local Gateway client and model. The original task is pas
 
 The workflow returns one JSON AgentResult with ordered stage summaries, the final test plan, token usage and diagnostics. Exit status is 0 for all-stage success, 2 for failure/budget exhaustion and 3 for explicit permission approval.
 
-## Specialist PowerShell examples
+## GitHub-hosted execution
+
+The repository includes a manual GitHub Actions workflow that resolves an Agent by its committed catalogue ID and runs it on a fresh GitHub-hosted runner. It requires repository Variables `TOOLIXA_GATEWAY_URL` and `TOOLIXA_MODEL`, plus Secret `TOOLIXA_API_KEY`, pointing to a trusted remote HTTPS-compatible endpoint. It rejects localhost/private endpoints and does not allow write, shell, browser or arbitrary network permissions. The workflow runs only when dispatched against `main`; see [GitHub Cloud Runner guide](github-cloud-runner-guide.md).
+
+## Optional self-hosted CLI examples
 
 ~~~powershell
 python agents/07-software-engineer/main.py "Map the architecture and propose a safe refactor of the payment service" --workspace C:\projects\payments --grant workspace.read

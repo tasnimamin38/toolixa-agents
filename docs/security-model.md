@@ -31,7 +31,7 @@ A grant is supplied per AgentRequest. The advanced specialists currently request
 - Tool descriptions and system prompts are guidance, not security controls. The actual boundary is the registered tool set, argument validator, request policy and bounded tool implementation.
 - Failed model requests preserve counts of tools already completed, so aggregate workflow usage does not erase partial work.
 
-## Advanced specialist agents
+## Evidence-backed expert-agent runtime
 
 The six model-driven specialists are read-only:
 
@@ -43,6 +43,15 @@ The six model-driven specialists are read-only:
 - Research Analyst: searches local documents; does not browse the public internet.
 
 The existing six starter agents retain their documented boundaries. The thirteenth agent, Engineering Workflow Orchestrator, runs Software Engineer -> Code Reviewer -> Test Engineer in a fixed sequence. It passes prior text outputs as untrusted context, shares one global step/tool/time budget and stops on failure or missing evidence. It accepts only stages whose tools require workspace.read; it cannot add tools, change provider/model, reorder stages, spawn arbitrary agents or elevate permissions. All thirteen are experimental.
+
+## Domain analysis tools
+
+- Python Security AST inspection parses source without executing it and emits rule IDs, severity and source locations, never source lines or secret values.
+- Delivery planning validates the task DAG and calculates earliest/latest schedule, critical path, slack and owner workload; it does not launch tasks.
+- OpenAPI comparison detects selected backwards-incompatible changes in local OpenAPI 3.x JSON. It does not dereference `$ref`, parse YAML or call remote APIs.
+- Script-timeline analysis measures supplied hook spacing, timeline gaps and final CTA coverage; it does not predict actual view retention.
+- Static HTML crawling is restricted to a supplied workspace snapshot and makes zero network requests.
+- Python module graph analysis parses local source into AST and detects local import cycles without importing or executing project code.
 
 ## Workspace data protections
 
@@ -74,6 +83,6 @@ Research Analyst cites local source paths and line numbers. It must not claim to
 
 ## Outstanding security work
 
-This branch has passed its automated checks but has not completed an independent penetration test. Remaining work includes comprehensive CSRF/session review, login and API rate limiting, provider response-size limits, tamper-evident audit, secret-rotation/recovery, DNS/IP pinning or enforced egress controls for any future remote fetching, sandboxed write/execute tools, MCP adversarial testing, hosted identity and tenant isolation.
+The feature branch's latest GitHub-hosted verification passed 112 tests, compilation, Ruff lint/format and catalogue validation. This does not replace an independent penetration test. Remaining work includes comprehensive CSRF/session review, login and API rate limiting, provider response-size limits, tamper-evident audit, secret-rotation/recovery, DNS/IP pinning or enforced egress controls for any future remote fetching, sandboxed write/execute tools, MCP adversarial testing, hosted identity and tenant isolation.
 
 This is an experimental, single-user, loopback-only Gateway and read-only workflow alpha. Do not deploy it as a public service or trust model outputs without human review.

@@ -42,20 +42,22 @@ Toolixa Agents is evolving from a static agent directory and Python starter SDK 
   <p><strong>Bounded tool-calling runtime · 13 agents · fixed engineering workflow · independent security review pending</strong></p>
 </div>
 
-**Important release distinction:** the original six-agent foundation and static directory are on `main`. The Local AI Gateway, shared model-driven tool runtime and six advanced specialists are in Draft [Pull Request #1](https://github.com/tasnimamin38/toolixa-agents/pull/1), branch `feature/python-local-ai-gateway`. The feature branch now includes a fixed three-stage Engineering Workflow Orchestrator in addition to the six specialist agents. Implementation commit `3d4453e` passed local Windows/Python 3.11 regression checks, GitHub CI and Dependency Security. It remains in Draft PR #1 and has not been merged into `main` or deployed as a hosted backend. Independent security review remains pending.
+**Main-branch rule:** `main` is the canonical integration branch. All work in this upgrade is maintained on a branch descended from `main` and reviewed through Draft [Pull Request #1](https://github.com/tasnimamin38/toolixa-agents/pull/1). The 13-agent capability upgrade, advanced shared tools, Gateway and GitHub-hosted runner are **not merged or deployed to the live site** until that PR is reviewed and merged.
+
+The current feature branch upgrades the six original starters into the shared model-driven runtime, retains six domain specialists and the fixed three-stage engineering workflow, and adds a catalogue-bound GitHub Actions runner. Every model-driven agent requires at least one successful registered tool call before it can report success. The latest verified GitHub-hosted suite passed 112 tests; the independent security review and actual remote-model invocation remain outstanding.
 
 | Area | Current state |
 |---|---|
-| Static Agent Directory | Deployed on Vercel |
-| Python core contracts and safety primitives | Experimental foundation on `main` |
-| Six bounded starter agents | Experimental on `main` |
-| Local browser-based AI Gateway | Draft PR #1 |
-| Shared model-driven tool-calling runtime | Draft PR #1 |
-| Six advanced model-driven specialists | Draft PR #1 |
-| Fixed Engineering Workflow Orchestrator | Draft PR #1 |
-| Native vendor protocols and MCP tool execution | Planned — next phase |
-| Write/execute sandbox and autonomous multi-agent delegation | Planned — later beta phases |
-| Production hardening and hosted multi-user SaaS | Not started — later phases |
+| Canonical integration branch | `main` |
+| Expert-agent upgrade | Draft PR #1, descended from `main` |
+| Shared model-driven runtime and evidence gate | Draft PR #1 |
+| 13 catalogued agent definitions | Draft PR #1 |
+| Advanced domain-analysis tools | Draft PR #1 |
+| Manual GitHub-hosted Agent runner | Draft PR #1; requires a remote HTTPS BYOK endpoint |
+| Local AI Gateway | Draft PR #1; single-user loopback alpha |
+| Write/execute sandbox | Not enabled |
+| Independent security review | Pending |
+| Production multi-user SaaS | Not started |
 
 This is **not production-ready software**. The gateway is a single-user, loopback-only local alpha. Do not expose it to the public internet or use it as an unreviewed executor for untrusted code.
 
@@ -92,30 +94,31 @@ This is **not production-ready software**. The gateway is a single-user, loopbac
   </tr>
 </table>
 
-## Agent directory
+## Expert agent directory
 
-| Agent | Current capability | Important boundary |
+All 12 specialist agents use the same model-driven runtime and require at least one successful registered tool call before reporting success. The thirteenth entry is a fixed sequential workflow over three real specialists. Agent definitions, registered tools, catalog metadata and tests are kept together in this repository.
+
+| Agent | Expert task capability | Current hard boundary |
 |---|---|---|
-| **Dev Copilot** | Read-only Python workspace inspection and AST analysis | Does not execute or modify code |
-| **Aegis Security** | Passive local secret-pattern and risky-code checks | Not an active scanner or penetration tester |
-| **Task Orchestrator** | Deterministic task dependency ordering | Does not launch autonomous sub-agents |
-| **RAG Chatbot** | Local Markdown/text retrieval with source line ranges | Lexical retrieval, not vector/embedding search |
-| **Content Maestro** | Structured editorial brief and research checklist | Does not perform live web research |
-| **Web Scraper** | Parse supplied local HTML into metadata, headings and links | No remote crawling or arbitrary HTTP fetching |
+| **Dev Copilot** | Repository mapping, cross-file search, Python AST/module graph analysis, Git diff interpretation and implementation planning | Read-only; no edits, shell or code execution |
+| **Aegis Security** | Passive secret-pattern and Python AST security analysis, including unsafe deserialization, shell execution and weak crypto patterns | Not an active scanner, exploit tool or penetration test |
+| **Task Orchestrator** | Complex task decomposition, dependency DAG validation, critical-path schedule, slack and owner workload analysis | Plans only; does not execute or spawn agents |
+| **RAG Chatbot** | Local document retrieval, multi-source synthesis and exact file/line citations | Lexical retrieval; no embeddings/vector index or web search |
+| **Content Maestro** | Editorial strategy, local-source coverage, script timeline, hook cadence and CTA checks | Does not fetch external sources or predict real audience retention |
+| **Web Scraper** | Local HTML extraction and bounded multi-page crawling of an offline snapshot, including internal link graphs | Zero network requests; not a live web crawler |
+| **Software Engineer** | Architecture mapping, source tracing, Python AST/module inspection, Git diff and implementation/migration plans | Does not apply patches or execute code |
+| **Code Reviewer** | Independent diff review, correctness/security/reliability risk ranking and test-gap analysis | Does not modify code or run tests |
+| **Test Engineer** | Source-to-test mapping, pytest scenario design, fixtures, edge cases and regression strategy | Does not create or execute tests |
+| **Data Analyst** | Bounded CSV profiling, types, missingness, duplicates and descriptive statistics | No raw-row export or data mutation |
+| **API Architect** | OpenAPI 3.x JSON inspection, operation/schema inventory and backwards-compatibility comparison | No remote calls, YAML parsing or `$ref` dereferencing |
+| **Research Analyst** | Local-document evidence retrieval, contradiction analysis, synthesis and source/line citations | No public internet browsing |
+| **Engineering Workflow** | Fixed Software Engineer → Code Reviewer → Test Engineer sequence with shared budgets and evidence handoffs | Read-only, fixed order; no dynamic spawning |
 
-### Advanced specialist agents (Draft PR #1)
+### GitHub-hosted agent execution
 
-| Agent | Real work it performs | Boundary |
-|---|---|---|
-| **Software Engineer** | Maps source, inspects Python AST/Git diff, proposes a refactor plan and patch text | Does not apply edits or execute code |
-| **Code Reviewer** | Reviews changes and related source; prioritizes actionable findings with file evidence | Does not fix code or run tests |
-| **Test Engineer** | Maps modules to tests and designs pytest cases, fixtures and assertions | Does not execute tests or write test files |
-| **Data Analyst** | Profiles local CSV data: missingness, duplicates and descriptive statistics | No raw-row upload or data mutation |
-| **API Architect** | Inspects OpenAPI 3.x JSON and maps endpoints/schemas | No remote endpoint calls; no YAML yet |
-| **Research Analyst** | Searches local docs and synthesizes source/line-cited evidence | No public internet browsing |
-| **Engineering Workflow Orchestrator** | Runs Software Engineer → Code Reviewer → Test Engineer with shared handoffs and budget | Fixed order; read-only; no dynamic spawning |
+The feature branch includes a manual Actions workflow that runs a selected catalogue Agent on a fresh GitHub-hosted runner. It is restricted to the reviewed `main` ref, grants only registered read capabilities, and never runs on pull-request jobs with provider secrets. Configure a remote HTTPS OpenAI Chat Completions-compatible endpoint with repository Variables `TOOLIXA_GATEWAY_URL`, `TOOLIXA_MODEL` and Secret `TOOLIXA_API_KEY` after the feature is merged. A laptop `localhost` Gateway is deliberately rejected.
 
-Browse the [live directory](https://toolixa-agents.vercel.app/) or inspect each agent under `agents/`. The advanced agents and Engineering Workflow Orchestrator are included in the Draft branch catalogue, not yet in the live Vercel site.
+See the [GitHub Cloud Runner guide](docs/github-cloud-runner-guide.md) for setup, workflow inputs, security limits and troubleshooting. The live Vercel directory remains unchanged until the Draft PR is merged and deployed.
 
 ## Architecture
 

@@ -1,6 +1,6 @@
 # Run Toolixa Agents on GitHub Actions
 
-This workflow runs one registered Toolixa agent on a fresh GitHub-hosted Ubuntu runner. It does not use the developer's laptop, a self-hosted runner, a local Docker daemon, or the local loopback Gateway.
+This workflow runs one registered Toolixa agent on a fresh GitHub-hosted Ubuntu runner. Development, formatting, tests and execution are performed in GitHub; no laptop checkout, self-hosted runner or local Docker environment is required. It does not use the developer's laptop, a self-hosted runner, a local Docker daemon, or the local loopback Gateway.
 
 ## Required repository settings
 
