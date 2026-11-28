@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+from pathlib import Path
 from typing import Any
 
 from toolixa_core.agent_tools.workspace import read_workspace_text

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from html.parser import HTMLParser
 import posixpath
+from html.parser import HTMLParser
 from typing import Any
 from urllib.parse import unquote, urljoin, urlsplit
 
