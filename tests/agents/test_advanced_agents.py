@@ -45,6 +45,7 @@ ADVANCED = {
             "workspace.read_file",
             "workspace.search_text",
             "python.inspect_file",
+            "qa.map_python_test_coverage",
         },
         "path": "python.inspect_file",
         "arguments": {"path": "module.py"},
@@ -52,7 +53,8 @@ ADVANCED = {
     },
     "10-data-analyst": {
         "id": "data-analyst",
-        "tools": {"workspace.list_files", "workspace.read_file", "data.profile_csv"},
+        "tools": {"workspace.list_files", "workspace.read_file", "data.profile_csv",
+            "data.compare_csv_datasets"},
         "path": "data.profile_csv",
         "arguments": {"path": "metrics.csv"},
         "fixture": "csv",
