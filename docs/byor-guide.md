@@ -6,7 +6,7 @@ BYOR means the developer chooses where the agent process runs: a local Python vi
 
 The Local AI Gateway and the model-driven specialist runtime are Python processes operated by the developer. The current Gateway binds to loopback only. It is not a public service, multi-user control plane, or hardened remote executor.
 
-The advanced specialist agents currently use a shared, bounded ToolAgent runtime. Each agent registers its own real read-only tools; the runtime validates model tool calls, checks request-scoped permissions, and enforces step, tool-call and wall-clock budgets.
+The advanced specialists use a shared, bounded ToolAgent runtime. The Engineering Workflow Orchestrator runs Software Engineer, Code Reviewer and Test Engineer sequentially through their existing definitions; each registers its own real read-only tools. The coordinator passes bounded prior answers as untrusted context and enforces one overall step, tool-call and wall-clock budget.
 
 This release does not include a production sandbox executor. Arbitrary shell execution, source writes, test execution, browser automation, remote crawling and MCP tool invocation are disabled/not provided. Do not run untrusted code on a workstation that contains personal files, production credentials, or privileged cloud access.
 
@@ -27,7 +27,7 @@ Never paste credentials into chat, commit actual keys, print the environment, or
 3. To run the local dashboard/API, install python -m pip install -e "./core[gateway]".
 4. To run the model-driven specialist agents, install python -m pip install -e "./core[runtime]".
 5. A combined local installation can use python -m pip install -e "./core[gateway,runtime]".
-6. Read the selected agent README and manifest; all advanced specialists currently require an explicit workspace.read grant.
+6. Read the selected agent README and manifest; all advanced specialists and the fixed workflow require an explicit workspace.read grant.
 7. Start with a temporary workspace and synthetic data first.
 8. Add a provider in the local dashboard only when a model-backed operation needs one.
 

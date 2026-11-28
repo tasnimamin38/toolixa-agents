@@ -29,10 +29,11 @@ A grant is supplied per AgentRequest. The advanced specialists currently request
 - Tool result JSON and diagnostics are bounded and passed through secret redaction.
 - Unknown tools, malformed arguments, denied permissions, tool failures and provider errors produce structured diagnostics; they do not fall back to arbitrary code execution.
 - Tool descriptions and system prompts are guidance, not security controls. The actual boundary is the registered tool set, argument validator, request policy and bounded tool implementation.
+- Failed model requests preserve counts of tools already completed, so aggregate workflow usage does not erase partial work.
 
 ## Advanced specialist agents
 
-The first six model-driven specialists are read-only:
+The six model-driven specialists are read-only:
 
 - Software Engineer: local inventory, source reads, search, Python AST and fixed Git diff; returns plans and patch text but cannot apply changes.
 - Code Reviewer: examines diffs and source; cannot change code or execute tests.
@@ -41,11 +42,11 @@ The first six model-driven specialists are read-only:
 - API Architect: inspects local OpenAPI 3.x JSON; does not call endpoints.
 - Research Analyst: searches local documents; does not browse the public internet.
 
-The existing six starter agents retain their documented boundaries. All twelve are experimental.
+The existing six starter agents retain their documented boundaries. The thirteenth agent, Engineering Workflow Orchestrator, runs Software Engineer -> Code Reviewer -> Test Engineer in a fixed sequence. It passes prior text outputs as untrusted context, shares one global step/tool/time budget and stops on failure or missing evidence. It accepts only stages whose tools require workspace.read; it cannot add tools, change provider/model, reorder stages, spawn arbitrary agents or elevate permissions. All thirteen are experimental.
 
 ## Workspace data protections
 
-Workspace tools resolve each requested file under the selected root, reject parent traversal, reject symlink paths and symlink escapes, exclude hidden/credential-bearing paths and cap file count/size/output. Common credential patterns are redacted in file excerpts and tool results.
+Workspace tools resolve each requested file under the selected root, reject POSIX/Windows absolute paths and parent traversal, reject symlink paths and symlink escapes, exclude hidden/credential-bearing paths and cap file count/size/output. Common credential patterns are redacted in file excerpts and tool results.
 
 Python inspection parses source using ast; it does not import or execute inspected code. CSV profiling samples a bounded number of rows and returns aggregates rather than raw rows. Git diff uses a fixed read-only Git invocation with shell=False, disabled external diff/textconv, a five-second timeout and capped output.
 
@@ -61,13 +62,13 @@ Encryption at rest protects a database-only copy from exposing provider keys. It
 
 ## Execution isolation
 
-DisabledExecutor remains the built-in executor and always refuses process execution. The advanced agents do not receive a shell, source-write, test-runner or browser tool. The fixed read-only Git diff tool is narrowly bounded and is not an arbitrary command interface.
+DisabledExecutor remains the built-in executor and always refuses process execution. The specialist agents and fixed workflow do not receive a shell, source-write, test-runner or browser tool. The fixed read-only Git diff tool is narrowly bounded and is not an arbitrary command interface.
 
 A future coding agent that applies patches or runs tests must use a reviewed isolation boundary, explicit per-action approval, workspace snapshots/rollback, command allowlists, resource/network limits and an auditable action log. A container by itself is not a complete security boundary.
 
 ## Prompt injection and evidence
 
-Repository contents, CSV headers, documents, code comments, API descriptions, model responses and tool results are untrusted data. They may contain instruction-like text. The runtime does not treat them as policy; only code-defined registered tools and user-granted permissions determine what can be executed.
+Repository contents, CSV headers, documents, code comments, API descriptions, model responses, previous-stage handoffs and tool results are untrusted data. They may contain instruction-like text. The runtime does not treat them as policy; only code-defined registered tools and user-granted permissions determine what can be executed.
 
 Research Analyst cites local source paths and line numbers. It must not claim to have searched the web or verified live facts.
 
@@ -75,4 +76,4 @@ Research Analyst cites local source paths and line numbers. It must not claim to
 
 This branch has passed its automated checks but has not completed an independent penetration test. Remaining work includes comprehensive CSRF/session review, login and API rate limiting, provider response-size limits, tamper-evident audit, secret-rotation/recovery, DNS/IP pinning or enforced egress controls for any future remote fetching, sandboxed write/execute tools, MCP adversarial testing, hosted identity and tenant isolation.
 
-This is an experimental, single-user, loopback-only Gateway alpha and read-only specialist runtime. Do not deploy it as a public service or trust its model outputs without human review.
+This is an experimental, single-user, loopback-only Gateway and read-only workflow alpha. Do not deploy it as a public service or trust model outputs without human review.

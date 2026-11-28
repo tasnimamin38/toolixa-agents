@@ -271,3 +271,29 @@ def test_tool_runtime_passes_only_remaining_wall_clock_budget(tmp_path: Path):
     assert result.status is AgentStatus.SUCCEEDED
     assert len(client.timeouts) == 2
     assert client.timeouts[1] < client.timeouts[0]
+
+
+def test_tool_runtime_preserves_tool_call_count_when_provider_fails_after_tool_use(
+    tmp_path: Path,
+):
+    client = SequenceClient(
+        [
+            response(tool_calls=[tool_call()]),
+            ProviderError("gateway disconnected after tool use"),
+        ]
+    )
+    agent, tool = build_agent(client)
+
+    result = agent.run(
+        AgentRequest(
+            "test-agent",
+            {"prompt": "Inspect the project."},
+            workspace=str(tmp_path),
+            grants=frozenset({"workspace.read"}),
+        )
+    )
+
+    assert result.status is AgentStatus.FAILED
+    assert tool.calls == ["hello"]
+    assert result.usage["tool_calls"] == 1
+    assert result.usage["steps"] == 2

@@ -1,8 +1,8 @@
-# Advanced Specialist Agents
+# Advanced Specialist Agents and Workflows
 
 **Release:** Experimental alpha on the feature/python-local-ai-gateway branch.
 
-The six advanced specialists share one Python tool-calling runtime. They are not six independent prompt wrappers: each registers real read-only tools, validates the model's arguments against a JSON schema, checks the request's workspace.read grant and workspace root, and returns structured evidence. Provider calls go through your local Toolixa Gateway.
+The six advanced specialists share one Python tool-calling runtime. They register real read-only tools, validate model arguments against JSON schemas, require the request's workspace.read grant and return structured evidence. Provider calls go through your local Toolixa Gateway.
 
 ## Prerequisites
 
@@ -11,10 +11,10 @@ The six advanced specialists share one Python tool-calling runtime. They are not
 3. Create a Toolixa Gateway API key in the dashboard.
 4. Keep the API key in the local process environment; never save a real key in Git, agent manifests or source files.
 
-Install the runtime:
+Install both optional extras:
 
 ~~~powershell
-python -m pip install -e "./core[runtime]"
+python -m pip install -e "./core[gateway,runtime]"
 ~~~
 
 Set the connection in the current PowerShell session:
@@ -38,7 +38,25 @@ Use the exact model ID displayed by the Gateway. The model must support tool cal
 | API Architect | file inventory, file reader, OpenAPI 3.x JSON inspector | endpoint/schema inventory and integration architecture |
 | Research Analyst | file inventory, file reader, local-document search | evidence-based brief with local file and line citations |
 
-### PowerShell examples
+## Engineering Workflow Orchestrator
+
+The thirteenth agent runs the three engineering specialists in one fixed workflow:
+
+1. Software Engineer — project inventory and implementation analysis.
+2. Code Reviewer — independent review of the workspace and Engineer's claims.
+3. Test Engineer — evidence-based pytest and regression test plan.
+
+Run it from the repository root:
+
+~~~powershell
+python agents/13-engineering-workflow/main.py "Review the payments service and propose the safest reliability improvement" --workspace C:\projects\payments --grant workspace.read
+~~~
+
+All stages use the same local Gateway client and model. The original task is passed to the Engineer; the Reviewer receives the Engineer's bounded answer as untrusted context; the Test Engineer receives both prior answers as untrusted context. Each stage must call at least one registered read-only tool. The coordinator enforces one shared step/tool-call/wall-clock budget and stops on the first stage failure, permission requirement, missing evidence or budget exhaustion.
+
+The workflow returns one JSON AgentResult with ordered stage summaries, the final test plan, token usage and diagnostics. Exit status is 0 for all-stage success, 2 for failure/budget exhaustion and 3 for explicit permission approval.
+
+## Specialist PowerShell examples
 
 ~~~powershell
 python agents/07-software-engineer/main.py "Map the architecture and propose a safe refactor of the payment service" --workspace C:\projects\payments --grant workspace.read
@@ -51,7 +69,7 @@ python agents/12-research-analyst/main.py "Summarise authentication decisions an
 
 Replace example directories with directories you own and intend to inspect.
 
-## Shared CLI options
+## Shared specialist CLI options
 
 ~~~text
 --workspace PATH           Required local workspace root
@@ -61,7 +79,7 @@ Replace example directories with directories you own and intend to inspect.
 --max-wall-seconds N       Total wall-clock budget (default 90 seconds)
 ~~~
 
-The CLI prints an AgentResult JSON object. Exit status is 0 for success, 2 for failure, and 3 when permission is missing and the agent needs an explicit grant.
+For the engineering workflow, these three limits are shared by all stages (defaults: 25 steps, 20 tool calls, 120 seconds). Its original task is capped at 12,000 characters and prior-stage text at 10,000 characters each.
 
 ## Tool and safety boundaries
 
@@ -72,10 +90,11 @@ The CLI prints an AgentResult JSON object. Exit status is 0 for success, 2 for f
 - OpenAPI inspector supports OpenAPI 3.x JSON only; YAML and remote URL fetching are not supported.
 - Research search searches local Markdown, RST, text and AsciiDoc documents only; it does not browse the public internet.
 - Runtime model tool calls are sequential, JSON-schema validated, request-grant checked and bounded by step/tool-call/wall-clock budgets.
+- The engineering workflow preserves the fixed three-agent sequence. It does not dynamically spawn agents or expose extra tools.
 
 ## What is not enabled
 
-No agent in this release can write source files, apply patches, run shell commands, execute tests, install packages, make arbitrary HTTP requests, automate a browser, launch another agent or invoke MCP tools. The Software Engineer may propose a diff as text, but it does not apply that diff.
+No specialist or workflow stage can write source files, apply patches, run shell commands, execute tests, install packages, make arbitrary HTTP requests, automate a browser or invoke MCP tools. The Software Engineer may propose a diff as text, but it does not apply that diff. Test Engineer proposes tests but does not run them.
 
 The existing DisabledExecutor remains deny-by-default. Read-only Git inspection is a fixed internal operation, not a general-purpose shell tool.
 
@@ -85,7 +104,7 @@ The existing DisabledExecutor remains deny-by-default. Read-only Git inspection 
 
 **Model not found:** copy the exact namespaced ID from the Gateway's model list into TOOLIXA_MODEL.
 
-**Tool calls unsupported:** choose a model and upstream that support function/tool calling. A chat-only model can answer simple prompts but cannot use these deterministic tools.
+**Tool calls unsupported:** choose a model and upstream that support function/tool calling. A chat-only model cannot invoke the specialists' deterministic tools.
 
 **Permission denied:** rerun with --grant workspace.read and verify that --workspace points to the intended directory.
 
@@ -93,4 +112,4 @@ The existing DisabledExecutor remains deny-by-default. Read-only Git inspection 
 
 ## Status
 
-These agents are a real model-plus-tool experimental alpha, not a production autonomous coding environment. Before enabling write/execute capabilities, Toolixa needs a separately reviewed isolated executor, patch approval flow, test runner allowlist, audit trail and adversarial security testing.
+The specialists and the fixed three-stage workflow are model-plus-tool experimental alpha, not a production autonomous coding environment. Before enabling dynamic delegation or write/execute capabilities, Toolixa needs a separately reviewed agent graph policy, isolated executor, patch approval flow, test runner allowlist, audit trail and adversarial security testing.

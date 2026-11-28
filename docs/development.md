@@ -7,6 +7,8 @@
 - core/src/toolixa_core/agent_tools/ contains real local evidence tools.
 - agents/01-06 contains the initial bounded starter examples.
 - agents/07-12 contains six model-driven read-only specialists.
+- agents/13 contains the fixed three-stage Engineering Workflow Orchestrator.
+- core/src/toolixa_core/workflows/engineering.py coordinates the fixed specialist sequence with one shared budget.
 - catalog/agents.json is generated from manifests; do not edit by hand.
 - tests/ contains core, gateway, agent, catalogue and static-directory tests.
 - docs/ contains architecture, security, install and phase plans.
@@ -32,7 +34,7 @@ Start the local Gateway in one terminal:
 python -m toolixa_core.gateway
 ~~~
 
-In another PowerShell session, set TOOLIXA_GATEWAY_URL, TOOLIXA_API_KEY and TOOLIXA_MODEL from the local dashboard and run one of agents/07-12 with --workspace PATH --grant workspace.read.
+In another PowerShell session, set TOOLIXA_GATEWAY_URL, TOOLIXA_API_KEY and TOOLIXA_MODEL from the local dashboard and run one of agents/07-12 with --workspace PATH --grant workspace.read. To run all three engineering specialists in sequence, use agents/13-engineering-workflow/main.py with the same explicit workspace/grant.
 
 Never commit an actual API key. Use synthetic test fixtures and mock provider responses.
 
@@ -84,4 +86,4 @@ python -m pytest -q
 
 Specialists are read-only. The Software Engineer can suggest a patch as text but cannot apply it. Test Engineer can propose tests but cannot execute them. Research Analyst searches local files only. Data Analyst supports CSV, API Architect supports OpenAPI 3.x JSON only, and the existing Web Scraper parses supplied local HTML only.
 
-MCP, native Anthropic/Gemini adapters, agent-to-agent delegation, vector memory, browser automation, source writes, test execution and isolated shell execution are future work. Passing tests makes this an experimental alpha, not a production autonomous-agent platform.
+MCP, native Anthropic/Gemini adapters, dynamic/model-selected agent graphs, parallel agent delegation, vector memory, browser automation, source writes, test execution and isolated shell execution are future work. The fixed three-stage engineering workflow is available, but it cannot spawn or reorder agents. Passing tests makes this an experimental alpha, not a production autonomous-agent platform.

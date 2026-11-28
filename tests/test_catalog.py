@@ -6,11 +6,11 @@ from scripts.build_catalog import build_catalog, catalog_text
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_catalog_contains_twelve_unique_agents_and_valid_paths():
+def test_catalog_contains_thirteen_unique_agents_and_valid_paths():
     catalog = build_catalog(ROOT)
     agents = catalog["agents"]
-    assert len(agents) == 12
-    assert len({agent["id"] for agent in agents}) == 12
+    assert len(agents) == 13
+    assert len({agent["id"] for agent in agents}) == 13
     assert {
         "software-engineer",
         "code-reviewer",
@@ -18,6 +18,7 @@ def test_catalog_contains_twelve_unique_agents_and_valid_paths():
         "data-analyst",
         "api-architect",
         "research-analyst",
+        "engineering-workflow",
     }.issubset({agent["id"] for agent in agents})
     for agent in agents:
         base = ROOT / agent["path"]

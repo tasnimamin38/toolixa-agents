@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "engineering-workflow",
+  "name": "Engineering Workflow Orchestrator",
+  "version": "0.1.0",
+  "category": "development",
+  "description": "Runs Software Engineer, Code Reviewer and Test Engineer sequentially through their real read-only tools, with evidence-backed handoffs and one shared execution budget.",
+  "entrypoint": "main.py",
+  "python": ">=3.11",
+  "dependencies": [],
+  "capabilities": [
+    "sequential_multi_agent_orchestration",
+    "engineering_analysis",
+    "independent_code_review",
+    "test_strategy_generation",
+    "evidence_backed_handoffs",
+    "shared_execution_budget"
+  ],
+  "permissions": [
+    "workspace.read"
+  ],
+  "status": "experimental",
+  "documentation": "README.md"
+}

@@ -104,3 +104,8 @@
 - Existing six starter-agent behavior remains intact.
 - Runtime code does not silently enable write, shell, browser, network or MCP access.
 - Passing local or GitHub checks establishes an experimental alpha, not production readiness.
+
+
+## Follow-on workflow milestone (2026-11-28)
+
+The fixed Engineering Workflow Orchestrator has been added as the thirteenth catalogue entry. It runs Software Engineer -> Code Reviewer -> Test Engineer sequentially using the existing definitions, bounded untrusted handoffs and one shared execution budget. See [Engineering Workflow Implementation Plan](2026-11-28-multi-agent-engineering-workflow.md) and [Engineering Workflow Guide](../engineering-workflow-guide.md). The earlier twelve-agent count in this foundation milestone describes the state at the time that milestone was completed.

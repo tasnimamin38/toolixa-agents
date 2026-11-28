@@ -70,6 +70,16 @@ python agents/12-research-analyst/main.py "Summarise the documented architecture
 
 Optional controls: --max-steps, --max-tool-calls, --max-wall-seconds. The CLI prints a structured JSON AgentResult and returns exit code 0 on success, 2 on failure and 3 when the run needs an explicit permission grant.
 
+## Run the fixed Engineering Workflow
+
+The thirteenth agent runs the existing Software Engineer, Code Reviewer and Test Engineer in order, with one shared execution budget:
+
+~~~powershell
+python agents/13-engineering-workflow/main.py "Review the payments service and propose the safest reliability improvement" --workspace C:\path\to\repo --grant workspace.read
+~~~
+
+The workflow requires a real read-only tool call at every stage. It passes prior answers as untrusted context and stops on the first failure, missing evidence or exhausted step/tool/time budget. It does not write code or execute tests. See [Engineering Workflow Guide](engineering-workflow-guide.md).
+
 ## Existing starter agents
 
 The six initial agents remain under agents/01-* through agents/06-*. Read each agent's README and install only its declared direct dependency. They do not automatically require the model gateway.
@@ -88,4 +98,4 @@ CI uses mocked model responses; no real provider key or paid inference request i
 
 ## Current limits
 
-The advanced specialists are experimental and read-only. They do not write code, execute tests, run arbitrary shell commands, browse the internet, invoke MCP tools or launch one another. Native provider protocols, MCP, memory, controlled patch application and isolated execution are future phases.
+The six model-driven specialists and fixed Engineering Workflow are experimental and read-only. The workflow runs Software Engineer -> Code Reviewer -> Test Engineer in a fixed sequence, requires workspace.read, and shares one global step/tool/time budget. No dynamic agent spawning, code writes, patch application, test execution, arbitrary shell, public internet browsing or MCP tool invocation is enabled. Native provider protocols, MCP, memory, controlled patch application and isolated execution are future phases.

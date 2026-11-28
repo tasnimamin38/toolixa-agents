@@ -232,6 +232,7 @@ class ToolAgent:
                             diagnostics=diagnostics,
                             usage=total_usage,
                             steps=tracker.steps,
+                            tool_calls=completed_calls,
                         )
                     except ToolArgumentError as exc:
                         diagnostics.append(self._diagnostic("invalid_tool_arguments", str(exc)))
@@ -242,6 +243,7 @@ class ToolAgent:
                             diagnostics=diagnostics,
                             usage=total_usage,
                             steps=tracker.steps,
+                            tool_calls=completed_calls,
                         )
                     except Exception as exc:
                         diagnostics.append(self._diagnostic("tool_error", type(exc).__name__))
@@ -252,6 +254,7 @@ class ToolAgent:
                             diagnostics=diagnostics,
                             usage=total_usage,
                             steps=tracker.steps,
+                            tool_calls=completed_calls,
                         )
 
                     if not isinstance(result, dict):
@@ -262,6 +265,7 @@ class ToolAgent:
                             diagnostics=diagnostics,
                             usage=total_usage,
                             steps=tracker.steps,
+                            tool_calls=completed_calls,
                         )
                     messages.append(
                         {
@@ -281,6 +285,7 @@ class ToolAgent:
                     diagnostics=diagnostics,
                     usage=total_usage,
                     steps=tracker.steps,
+                    tool_calls=completed_calls,
                 )
             except ToolArgumentError as exc:
                 diagnostics.append(self._diagnostic("invalid_tool_arguments", str(exc)))
@@ -291,6 +296,7 @@ class ToolAgent:
                     diagnostics=diagnostics,
                     usage=total_usage,
                     steps=tracker.steps,
+                    tool_calls=completed_calls,
                 )
             except ProviderError as exc:
                 diagnostics.append(self._diagnostic("provider_error", str(exc)))
@@ -301,6 +307,7 @@ class ToolAgent:
                     diagnostics=diagnostics,
                     usage=total_usage,
                     steps=tracker.steps,
+                    tool_calls=completed_calls,
                 )
 
     def _failure(
@@ -312,6 +319,7 @@ class ToolAgent:
         diagnostics: list[dict[str, str]] | None = None,
         usage: dict[str, int] | None = None,
         steps: int = 0,
+        tool_calls: int = 0,
     ) -> AgentResult:
         items = list(diagnostics or [])
         items.append(self._diagnostic(kind, message))
@@ -323,7 +331,7 @@ class ToolAgent:
             usage={
                 **(usage or {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}),
                 "model": getattr(self.client, "model", ""),
-                "tool_calls": 0,
+                "tool_calls": tool_calls,
                 "steps": steps,
             },
             diagnostics=tuple(items[:20]),

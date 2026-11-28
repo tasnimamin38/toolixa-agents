@@ -6,9 +6,9 @@ Toolixa has three distinct surfaces:
 
 1. The public static Agent Directory at https://toolixa-agents.vercel.app.
 2. The local Python AI Gateway installed and run by the developer.
-3. The Python core SDK, bounded starter agents and model-driven specialist runtime.
+3. The Python core SDK, bounded starter agents, model-driven specialists and fixed engineering workflow.
 
-The static website does not execute Python agents and is not the Gateway backend. The Gateway and new specialist runtime currently live on the Draft feature branch; the default main branch contains the initial six-agent foundation and static site.
+The static website does not execute Python agents and is not the Gateway backend. The Gateway, specialists and workflow currently live on the Draft feature branch; the default main branch contains the initial six-agent foundation and static site.
 
 ## Local AI flow
 
@@ -22,23 +22,19 @@ PowerShell
        -> encrypted local SQLite vault
        -> model discovery and playground
        -> create Toolixa Gateway API key
-  -> advanced agent CLI
+  -> engineering workflow CLI
        -> TOOLIXA_GATEWAY_URL
        -> TOOLIXA_API_KEY (Toolixa key only)
        -> TOOLIXA_MODEL (namespaced model ID)
-  -> Gateway /v1/chat/completions
-       -> configured upstream provider
-       -> assistant tool calls
-  -> ToolAgent
-       -> validate tool-call JSON schema
-       -> check request-scoped RuntimePolicy
-       -> enforce step/tool/time budgets
-       -> invoke read-only registered tool
-       -> append bounded tool result
-       -> final AgentResult
+  -> EngineeringWorkflow
+       -> Software Engineer / ToolAgent
+       -> Code Reviewer / ToolAgent
+       -> Test Engineer / ToolAgent
+       -> one shared step/tool/time budget
+       -> ordered AgentResult + stage evidence
 ~~~
 
-The Gateway accepts trusted upstream endpoints implementing the OpenAI Chat Completions-compatible routes used by the integration. The new GatewayChatClient uses the local Gateway; specialist agents do not receive upstream provider credentials.
+The Gateway accepts trusted upstream endpoints implementing the OpenAI Chat Completions-compatible routes used by the integration. Specialist agents and the coordinator do not receive upstream provider credentials.
 
 ## Shared runtime
 
@@ -49,6 +45,8 @@ The Gateway accepts trusted upstream endpoints implementing the OpenAI Chat Comp
 - tools/base.py declares a tool's name, description, required permissions and JSON parameters schema.
 - tools/registry.py publishes tool schemas and validates arguments and permissions before invocation.
 - agent_tools contains bounded read-only workspace, Python AST, CSV, OpenAPI JSON, local research and Git diff tools.
+- workflows/engineering.py coordinates the three engineering specialists in a fixed sequence, hands off bounded prior-stage text as untrusted context, enforces one overall budget and stops on failure or missing tool evidence.
+- workflow_runtime_cli.py exposes the workflow through a PowerShell-friendly JSON CLI.
 - security defines canonical permission names, deny-by-default decisions and ephemeral approvals.
 - runtime/executor.py remains disabled by default; there is no general shell or source-write executor.
 
@@ -74,35 +72,46 @@ The Gateway accepts trusted upstream endpoints implementing the OpenAI Chat Comp
 
 Each specialist has a distinct tool set and system instructions. All six require the explicit workspace.read grant. They are model-plus-tool agents, not prompt-only placeholders, but remain experimental and read-only.
 
+### Engineering Workflow Orchestrator
+
+The thirteenth catalogue entry runs three of the specialists above as a single fixed workflow:
+
+1. Software Engineer: project analysis.
+2. Code Reviewer: independent findings.
+3. Test Engineer: regression/test plan.
+
+Every stage uses its own real registered tools, and every successful stage must invoke at least one. The coordinator passes bounded answers forward as untrusted context, uses the same Gateway client/model and workspace root, and shares one global step/tool/time budget. It stops on the first stage failure, permission requirement, missing evidence or exhausted budget. It cannot dynamically spawn agents or add permissions.
+
 ## Tool execution and trust
 
 Agent manifests describe capabilities but never grant permissions. Every run supplies explicit grants. Every model-proposed tool call is checked against the agent's registered tools, JSON schema and request-scoped policy. Tool results are bounded before being appended to the conversation.
 
-Prompts, repository contents, retrieved passages, provider output and tool results are untrusted data. They never override runtime policy. Tool calls execute sequentially within the request's step, call and wall-clock budgets.
+Prompts, repository contents, retrieved passages, provider output and tool results are untrusted data. They never override runtime policy. Tool calls execute sequentially within the request's step, call and wall-clock budgets. Engineering workflow handoff text is also untrusted and is re-checked by the receiving specialist.
 
 ## Security boundaries
 
 - Local Gateway binds to 127.0.0.1; do not expose it through a tunnel, public reverse proxy or port forward.
 - Provider credentials remain encrypted in the Gateway vault. Agents receive only a Toolixa API key via local process environment.
-- Workspace tools reject path traversal, symlink escapes, hidden folders and credential-bearing files; source excerpts are redacted.
+- Workspace tools reject POSIX/Windows path traversal, symlink escapes, hidden folders and credential-bearing files; source excerpts are redacted.
 - Python source inspection uses AST parsing only; it never imports or executes source.
 - CSV profiling returns aggregates, not raw dataset rows.
 - Git diff uses a fixed read-only command with shell disabled, no external diff/textconv and a short timeout.
+- The fixed engineering workflow permits only its three existing specialists, only workspace.read, and one shared execution budget.
 - There is no general shell executor, source-write tool, browser automation, remote fetcher or MCP tool bridge in this release.
 
 ## Current gaps
 
-- Gateway/provider runtime and twelve-agent catalogue are still on the Draft PR branch, not deployed as a backend to Vercel.
+- Gateway/provider runtime and thirteen-agent catalogue are still on the Draft PR branch, not deployed as a backend to Vercel.
 - Native Anthropic/Gemini protocols, arbitrary REST adapters and OAuth are not yet implemented.
 - MCP client/server registration and permission-aware tool execution are not implemented.
-- Multi-agent delegation, persistent vector memory, browser automation and controlled write/execute sandboxes are not implemented.
+- Dynamic/model-selected agent graphs, parallel delegation, persistent vector memory, browser automation and controlled write/execute sandboxes are not implemented.
 - Independent penetration testing, complete CSRF/rate-limit hardening, audit observability and hosted multi-tenant isolation remain outstanding.
 
 ## Roadmap
 
 1. Experimental foundation: six bounded agents, Python core interfaces and static directory — on main.
-2. Local Gateway and specialist runtime alpha: encrypted BYOK Gateway, model tool-call runtime and six advanced specialists — Draft PR #1.
-3. Beta capabilities: native provider protocols, Python MCP SDK integration, persistent source-aware memory, explicit multi-agent delegation and a reviewed approval/patch workflow.
+2. Local Gateway, model specialist runtime and fixed engineering workflow alpha — Draft PR #1.
+3. Beta capabilities: native provider protocols, Python MCP SDK integration, persistent source-aware memory, dynamic but permission-constrained delegation and a reviewed approval/patch workflow.
 4. Production gate: isolated execution, network egress controls, comprehensive adversarial tests, audit trail, authentication/rate limits and independent security review.
 5. Optional hosted SaaS: identity, tenant isolation, remote secret management/KMS, quotas, billing, backups and incident response — only after security review.
 
