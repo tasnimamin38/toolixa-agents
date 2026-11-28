@@ -297,3 +297,48 @@ def test_tool_runtime_preserves_tool_call_count_when_provider_fails_after_tool_u
     assert tool.calls == ["hello"]
     assert result.usage["tool_calls"] == 1
     assert result.usage["steps"] == 2
+
+
+def test_tool_runtime_requires_configured_minimum_evidence(tmp_path: Path):
+    client = SequenceClient([response("The codebase looks good.")])
+    tool = EchoTool()
+    definition = AgentDefinition(
+        id="test-agent",
+        name="Test Agent",
+        system_prompt="Use the registered evidence tool.",
+        tools=(tool,),
+        min_tool_calls=1,
+    )
+    agent = ToolAgent(client, definition)
+
+    result = agent.run(
+        AgentRequest(
+            "test-agent",
+            {"prompt": "Review the project."},
+            workspace=str(tmp_path),
+            grants=frozenset({"workspace.read"}),
+        )
+    )
+
+    assert result.status is AgentStatus.FAILED
+    assert result.diagnostics[0]["kind"] == "evidence_missing"
+    assert result.usage["tool_calls"] == 0
+
+
+def test_tool_runtime_redacts_model_final_answers(tmp_path: Path):
+    secret = "API_KEY=sk-1234567890abcdefghijkl"
+    client = SequenceClient([response(f"Found a setting: {secret}")])
+    agent, _ = build_agent(client)
+
+    result = agent.run(
+        AgentRequest(
+            "test-agent",
+            {"prompt": "Review the project."},
+            workspace=str(tmp_path),
+            grants=frozenset({"workspace.read"}),
+        )
+    )
+
+    assert result.status is AgentStatus.SUCCEEDED
+    assert secret not in result.output["answer"]
+    assert "[REDACTED]" in result.output["answer"]
