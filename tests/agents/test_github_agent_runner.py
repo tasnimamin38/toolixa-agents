@@ -124,7 +124,7 @@ def test_runner_executes_registered_tool_and_derives_only_required_grants(tmp_pa
     result = runner.run_registered_agent(
         "task-orchestrator",
         "Plan and validate a complex release workflow.",
-        tmp_path,
+        ROOT,
         client=client,
     )
     assert result.status is AgentStatus.SUCCEEDED
@@ -139,17 +139,17 @@ def test_runner_enforces_task_and_resource_budgets(tmp_path: Path):
     client = FakeClient("orchestration.validate_task_graph", {"tasks": [{"id": "a"}]})
     with pytest.raises(ValueError, match="characters"):
         runner.run_registered_agent(
-            "task-orchestrator", "x" * 12_001, tmp_path, client=client
+            "task-orchestrator", "x" * 12_001, ROOT, client=client
         )
     with pytest.raises(ValueError, match="max_steps"):
         runner.run_registered_agent(
-            "task-orchestrator", "Plan safely.", tmp_path, client=client, max_steps=26
+            "task-orchestrator", "Plan safely.", ROOT, client=client, max_steps=26
         )
     with pytest.raises(ValueError, match="max_wall_seconds"):
         runner.run_registered_agent(
             "task-orchestrator",
             "Plan safely.",
-            tmp_path,
+            ROOT,
             client=client,
             max_wall_seconds=181,
         )
