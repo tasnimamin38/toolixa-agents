@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 
 from toolixa_core.agent_runtime_cli import run_agent_cli
-from toolixa_core.agent_tools import PassiveSecurityAuditTool
+from toolixa_core.agent_tools import PassiveSecurityAuditTool, PythonSecurityASTTool
 from toolixa_core.runtime.agent import AgentDefinition
 
 EXCLUDED_DIRS = {".git", ".venv", "venv", "node_modules", "__pycache__", "dist", "build"}
@@ -143,13 +143,13 @@ def build_agent() -> AgentDefinition:
         name="Aegis Security",
         system_prompt=(
             "You are a senior application security engineer. Perform a bounded passive review of local source and "
-            "configuration evidence using the registered scanner. Explain threat surfaces, likely exploitability, "
+            "configuration evidence using the registered bounded pattern scanner and Python AST security analyzer. Explain threat surfaces, likely exploitability, "
             "impact, confidence, false-positive caveats and prioritized remediation. Distinguish pattern matches "
             "from confirmed vulnerabilities. Never repeat secret material, attempt exploitation, perform active "
             "scanning, connect to a target, or claim a full SAST/penetration test was completed. Cite exact file/line "
             "locations returned by the tool and state the scan limits."
         ),
-        tools=(PassiveSecurityAuditTool(),),
+        tools=(PassiveSecurityAuditTool(), PythonSecurityASTTool()),
         min_tool_calls=1,
     )
 

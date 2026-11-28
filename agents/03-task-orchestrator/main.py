@@ -8,7 +8,7 @@ from collections import deque
 from typing import Any
 
 from toolixa_core.agent_runtime_cli import run_agent_cli
-from toolixa_core.agent_tools import ValidateTaskGraphTool
+from toolixa_core.agent_tools import AnalyzeDeliveryPlanTool, ValidateTaskGraphTool
 from toolixa_core.runtime.agent import AgentDefinition
 
 
@@ -81,10 +81,11 @@ def build_agent() -> AgentDefinition:
             "You are a principal delivery architect. Decompose complex objectives into bounded, verifiable work "
             "packages with dependencies, acceptance criteria, owners/roles, risk gates and rollback points. Use the "
             "task-graph validator on the proposed dependency DAG, then revise any invalid graph. Identify critical "
-            "path, parallelizable work and blocked prerequisites. You may plan delegation but must not launch agents, "
+            "path, parallelizable work, schedule slack, owner workload and blocked prerequisites. "
+            "Use the schedule analyzer to calculate a deterministic critical path. You may plan delegation but must not launch agents, "
             "grant permissions, execute tasks or imply work has been performed."
         ),
-        tools=(ValidateTaskGraphTool(),),
+        tools=(ValidateTaskGraphTool(), AnalyzeDeliveryPlanTool()),
         min_tool_calls=1,
     )
 

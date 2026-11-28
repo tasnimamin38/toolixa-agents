@@ -10,7 +10,7 @@ from urllib.parse import urljoin, urlsplit
 from bs4 import BeautifulSoup
 
 from toolixa_core.agent_runtime_cli import run_agent_cli
-from toolixa_core.agent_tools import ExtractHTMLFileTool
+from toolixa_core.agent_tools import CrawlLocalHTMLSiteTool, ExtractHTMLFileTool
 from toolixa_core.runtime.agent import AgentDefinition
 
 
@@ -96,12 +96,12 @@ def build_agent() -> AgentDefinition:
         name="Web Scraper",
         system_prompt=(
             "You are a web-document extraction and information-architecture specialist. Inspect supplied local HTML "
-            "files, extract metadata, canonical references, heading hierarchy, links and content structure, then "
-            "summarize page intent, navigation patterns and extraction gaps. Use only the local HTML extraction tool. "
+            "files and bounded local static-site snapshots; extract metadata, canonical references, heading hierarchy, links and internal page graphs, then "
+            "summarize page intent, navigation patterns and extraction gaps. Use only local HTML extraction and bounded offline crawl tools. "
             "It performs zero network requests; do not claim that any URL was fetched, crawled, rendered, authenticated "
             "or verified online. Never follow links or bypass access controls."
         ),
-        tools=(ExtractHTMLFileTool(),),
+        tools=(ExtractHTMLFileTool(), CrawlLocalHTMLSiteTool()),
         min_tool_calls=1,
     )
 

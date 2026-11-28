@@ -21,15 +21,16 @@ EXPECTED = {
             "workspace.search_text",
             "python.inspect_file",
             "git.read_diff",
+            "python.analyze_module_graph",
         },
     },
     "02-aegis-security": {
         "id": "aegis-security",
-        "tools": {"security.audit_source"},
+        "tools": {"security.audit_source", "security.inspect_python_ast"},
     },
     "03-task-orchestrator": {
         "id": "task-orchestrator",
-        "tools": {"orchestration.validate_task_graph"},
+        "tools": {"orchestration.validate_task_graph", "orchestration.analyze_delivery_plan"},
     },
     "04-rag-chatbot": {
         "id": "rag-chatbot",
@@ -46,11 +47,12 @@ EXPECTED = {
             "workspace.read_file",
             "research.search_local_docs",
             "content.validate_editorial_brief",
+            "content.analyze_script_timeline",
         },
     },
     "06-web-scraper": {
         "id": "web-scraper",
-        "tools": {"html.extract_file"},
+        "tools": {"html.extract_file", "html.crawl_local_site"},
     },
 }
 

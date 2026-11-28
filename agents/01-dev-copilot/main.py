@@ -9,6 +9,7 @@ from pathlib import Path
 
 from toolixa_core.agent_runtime_cli import run_agent_cli
 from toolixa_core.agent_tools import (
+    AnalyzePythonModuleGraphTool,
     InspectPythonTool,
     ListWorkspaceFilesTool,
     ReadGitDiffTool,
@@ -98,6 +99,7 @@ def build_agent() -> AgentDefinition:
             ReadWorkspaceFileTool(),
             SearchWorkspaceTool(),
             InspectPythonTool(),
+            AnalyzePythonModuleGraphTool(),
             ReadGitDiffTool(),
         ),
         min_tool_calls=1,
