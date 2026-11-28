@@ -10,6 +10,10 @@ from urllib.parse import urljoin, urlsplit
 from bs4 import BeautifulSoup
 
 
+from toolixa_core.agent_runtime_cli import run_agent_cli
+from toolixa_core.agent_tools import ExtractHTMLFileTool
+from toolixa_core.runtime.agent import AgentDefinition
+
 def extract_html(
     html: str, *, base_url: str | None = None, max_links: int = 200
 ) -> dict[str, object]:
@@ -85,11 +89,6 @@ def main() -> None:
         json.dumps(extract_html(html, base_url=args.base_url, max_links=args.max_links), indent=2)
     )
 
-
-
-from toolixa_core.agent_runtime_cli import run_agent_cli
-from toolixa_core.agent_tools import ExtractHTMLFileTool
-from toolixa_core.runtime.agent import AgentDefinition
 
 
 def build_agent() -> AgentDefinition:

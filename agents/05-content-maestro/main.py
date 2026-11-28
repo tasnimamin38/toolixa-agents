@@ -6,6 +6,13 @@ import argparse
 import json
 
 
+from toolixa_core.agent_runtime_cli import run_agent_cli
+from toolixa_core.agent_tools import (
+    ListWorkspaceFilesTool, ReadWorkspaceFileTool, SearchLocalDocsTool,
+    ValidateEditorialBriefTool,
+)
+from toolixa_core.runtime.agent import AgentDefinition
+
 def build_brief(
     topic: str, *, audience: str = "general", content_format: str = "article"
 ) -> dict[str, object]:
@@ -69,14 +76,6 @@ def main() -> None:
         )
     )
 
-
-
-from toolixa_core.agent_runtime_cli import run_agent_cli
-from toolixa_core.agent_tools import (
-    ListWorkspaceFilesTool, ReadWorkspaceFileTool, SearchLocalDocsTool,
-    ValidateEditorialBriefTool,
-)
-from toolixa_core.runtime.agent import AgentDefinition
 
 
 def build_agent() -> AgentDefinition:

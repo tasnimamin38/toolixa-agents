@@ -7,6 +7,10 @@ import json
 import re
 from pathlib import Path
 
+from toolixa_core.agent_runtime_cli import run_agent_cli
+from toolixa_core.agent_tools import PassiveSecurityAuditTool
+from toolixa_core.runtime.agent import AgentDefinition
+
 EXCLUDED_DIRS = {".git", ".venv", "venv", "node_modules", "__pycache__", "dist", "build"}
 EXTENSIONS = {
     ".py",
@@ -132,11 +136,6 @@ def main() -> None:
     args = parser.parse_args()
     print(json.dumps(scan_workspace(args.workspace, max_files=args.max_files), indent=2))
 
-
-
-from toolixa_core.agent_runtime_cli import run_agent_cli
-from toolixa_core.agent_tools import PassiveSecurityAuditTool
-from toolixa_core.runtime.agent import AgentDefinition
 
 
 def build_agent() -> AgentDefinition:

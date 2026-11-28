@@ -7,6 +7,13 @@ import ast
 import json
 from pathlib import Path
 
+from toolixa_core.agent_runtime_cli import run_agent_cli
+from toolixa_core.agent_tools import (
+    InspectPythonTool, ListWorkspaceFilesTool, ReadGitDiffTool,
+    ReadWorkspaceFileTool, SearchWorkspaceTool,
+)
+from toolixa_core.runtime.agent import AgentDefinition
+
 EXCLUDED_DIRS = {".git", ".venv", "venv", "node_modules", "__pycache__", "dist", "build"}
 
 
@@ -70,14 +77,6 @@ def main() -> None:
     args = parser.parse_args()
     print(json.dumps(analyze_workspace(args.workspace, max_files=args.max_files), indent=2))
 
-
-
-from toolixa_core.agent_runtime_cli import run_agent_cli
-from toolixa_core.agent_tools import (
-    InspectPythonTool, ListWorkspaceFilesTool, ReadGitDiffTool,
-    ReadWorkspaceFileTool, SearchWorkspaceTool,
-)
-from toolixa_core.runtime.agent import AgentDefinition
 
 
 def build_agent() -> AgentDefinition:
