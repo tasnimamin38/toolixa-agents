@@ -52,15 +52,18 @@ jobs:
             agents/12-research-analyst/main.py
             core/src/toolixa_core/agent_runtime_cli.py
             core/src/toolixa_core/agent_tools/__init__.py
+            core/src/toolixa_core/agent_tools/api.py
             core/src/toolixa_core/agent_tools/content.py
             core/src/toolixa_core/agent_tools/html.py
             core/src/toolixa_core/agent_tools/orchestration.py
+            core/src/toolixa_core/agent_tools/python.py
             core/src/toolixa_core/agent_tools/security.py
             core/src/toolixa_core/runtime/agent.py
             scripts/run_github_agent.py
             tests/agents/test_expert_starter_agents.py
             tests/agents/test_github_agent_runner.py
             tests/core/test_agent_runtime.py
+            tests/core/test_expert_domain_tools.py
           )
           autopep8 --in-place --aggressive --aggressive ${FILES[@]}
           ruff check --fix --select I ${FILES[@]}
@@ -103,6 +106,6 @@ jobs:
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- agents/01-dev-copilot/main.py agents/02-aegis-security/main.py agents/03-task-orchestrator/main.py agents/04-rag-chatbot/main.py agents/05-content-maestro/main.py agents/06-web-scraper/main.py agents/07-software-engineer/main.py agents/08-code-reviewer/main.py agents/09-test-engineer/main.py agents/10-data-analyst/main.py agents/11-api-architect/main.py agents/12-research-analyst/main.py core/src/toolixa_core/agent_runtime_cli.py core/src/toolixa_core/agent_tools/__init__.py core/src/toolixa_core/agent_tools/content.py core/src/toolixa_core/agent_tools/html.py core/src/toolixa_core/agent_tools/orchestration.py core/src/toolixa_core/agent_tools/security.py core/src/toolixa_core/runtime/agent.py scripts/run_github_agent.py tests/agents/test_expert_starter_agents.py tests/agents/test_github_agent_runner.py tests/core/test_agent_runtime.py
+          git add -- agents/01-dev-copilot/main.py agents/02-aegis-security/main.py agents/03-task-orchestrator/main.py agents/04-rag-chatbot/main.py agents/05-content-maestro/main.py agents/06-web-scraper/main.py agents/11-api-architect/main.py agents/07-software-engineer/main.py agents/08-code-reviewer/main.py agents/09-test-engineer/main.py agents/10-data-analyst/main.py agents/11-api-architect/main.py agents/12-research-analyst/main.py core/src/toolixa_core/agent_runtime_cli.py core/src/toolixa_core/agent_tools/__init__.py core/src/toolixa_core/agent_tools/api.py core/src/toolixa_core/agent_tools/content.py core/src/toolixa_core/agent_tools/html.py core/src/toolixa_core/agent_tools/orchestration.py core/src/toolixa_core/agent_tools/python.py core/src/toolixa_core/agent_tools/security.py core/src/toolixa_core/runtime/agent.py scripts/run_github_agent.py tests/agents/test_expert_starter_agents.py tests/agents/test_github_agent_runner.py tests/core/test_agent_runtime.py tests/core/test_expert_domain_tools.py
           git commit -m '[autoformat] normalize expert-agent Python sources'
           git -c http.extraheader="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" push origin HEAD:feature/python-local-ai-gateway
