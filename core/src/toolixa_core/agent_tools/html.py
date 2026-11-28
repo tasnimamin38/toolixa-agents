@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from html.parser import HTMLParser
+import posixpath
 from typing import Any
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import unquote, urljoin, urlsplit
 
 from toolixa_core.agent_tools.workspace import read_workspace_text
 from toolixa_core.tools.base import ToolCallContext, ToolSpec
@@ -112,4 +113,104 @@ class ExtractHTMLFileTool:
             "links_returned": len(parser.links),
             "network_requests": 0,
             "scope": "local_html_only",
+        }
+
+
+class CrawlLocalHTMLSiteTool:
+    spec = ToolSpec(
+        "html.crawl_local_site",
+        "Crawl a bounded multi-page static HTML snapshot inside the approved workspace, extract page metadata and build an internal link graph. External links are recorded only as counts; no network requests are made.",
+        ("workspace.read",),
+        {
+            "type": "object",
+            "properties": {
+                "start_path": {"type": "string", "minLength": 1, "maxLength": 500},
+                "max_pages": {"type": "integer", "minimum": 1, "maximum": 100},
+                "max_depth": {"type": "integer", "minimum": 0, "maximum": 5},
+            },
+            "required": ["start_path"],
+            "additionalProperties": False,
+        },
+    )
+
+    @staticmethod
+    def _local_target(current_path: str, href: str) -> str | None:
+        base = "https://snapshot.invalid/" + current_path.lstrip("/")
+        resolved = urljoin(base, href)
+        parsed = urlsplit(resolved)
+        if parsed.scheme != "https" or parsed.hostname != "snapshot.invalid":
+            return None
+        candidate = unquote(parsed.path).lstrip("/")
+        if candidate.endswith("/"):
+            candidate += "index.html"
+        normalized = posixpath.normpath(candidate)
+        if (
+            normalized in {"", ".", ".."}
+            or normalized.startswith("../")
+            or normalized.startswith("/")
+            or posixpath.splitext(normalized)[1].lower() not in {".html", ".htm"}
+        ):
+            return None
+        return normalized
+
+    def invoke(self, arguments: dict[str, Any], context: ToolCallContext) -> dict[str, Any]:
+        start_path = arguments["start_path"]
+        maximum = arguments.get("max_pages", 30)
+        max_depth = arguments.get("max_depth", 3)
+        if not 1 <= maximum <= 100:
+            raise ValueError("max_pages must be between 1 and 100")
+        if not 0 <= max_depth <= 5:
+            raise ValueError("max_depth must be between 0 and 5")
+        queue: list[tuple[str, int]] = [(start_path, 0)]
+        visited: set[str] = set()
+        pages: list[dict[str, Any]] = []
+        edges: list[dict[str, str]] = []
+        external_links = 0
+        truncated = False
+        while queue:
+            current_path, depth = queue.pop(0)
+            if current_path in visited:
+                continue
+            if len(pages) >= maximum:
+                truncated = True
+                break
+            relative, source = read_workspace_text(context, current_path, max_bytes=1_000_000)
+            parser = _DocumentParser(
+                "https://snapshot.invalid/" + relative.as_posix(),
+                200,
+            )
+            parser.feed(source)
+            parser.close()
+            visited.add(relative.as_posix())
+            internal_targets: list[str] = []
+            for link in parser.links:
+                target = self._local_target(relative.as_posix(), link["href"])
+                if target is None:
+                    external_links += 1
+                    continue
+                internal_targets.append(target)
+                edges.append({"from": relative.as_posix(), "to": target})
+                if depth < max_depth and target not in visited:
+                    queue.append((target, depth + 1))
+            pages.append(
+                {
+                    "path": relative.as_posix(),
+                    "depth": depth,
+                    "title": parser.title_parts[0] if parser.title_parts else None,
+                    "description": parser.description,
+                    "canonical": parser.canonical,
+                    "headings": parser.headings,
+                    "internal_links": sorted(set(internal_targets)),
+                }
+            )
+        return {
+            "start_path": start_path,
+            "pages": pages,
+            "pages_crawled": len(pages),
+            "link_edges": edges[:500],
+            "external_links_observed": external_links,
+            "max_depth": max_depth,
+            "truncated": truncated or bool(queue),
+            "network_requests": 0,
+            "scope": "workspace_local_html_snapshot",
         }
