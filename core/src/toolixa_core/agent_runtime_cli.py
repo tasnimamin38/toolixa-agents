@@ -21,11 +21,18 @@ def run_agent_cli(
 ) -> int:
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument("prompt", help="Task or question for this specialist agent")
-    parser.add_argument("--workspace", required=True, help="Local workspace to inspect")
+    needs_workspace = any(
+        "workspace.read" in tool.spec.required_permissions for tool in definition.tools
+    )
+    parser.add_argument(
+        "--workspace",
+        required=needs_workspace,
+        help="Workspace root for agents that inspect local files",
+    )
     parser.add_argument(
         "--grant",
         action="append",
-        choices=["workspace.read"],
+        choices=["workspace.read", "security.scan.passive"],
         default=[],
         help="Explicitly grant a read-only capability (repeatable)",
     )

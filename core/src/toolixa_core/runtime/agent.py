@@ -25,10 +25,19 @@ class AgentDefinition:
     name: str
     system_prompt: str
     tools: tuple[Tool, ...]
+    min_tool_calls: int = 0
 
     def __post_init__(self) -> None:
         if not self.id.strip() or not self.name.strip() or not self.system_prompt.strip():
             raise ValueError("agent id, name and system prompt must be non-empty")
+        if (
+            not isinstance(self.min_tool_calls, int)
+            or isinstance(self.min_tool_calls, bool)
+            or self.min_tool_calls < 0
+        ):
+            raise ValueError("min_tool_calls must be a non-negative integer")
+        if self.min_tool_calls and not self.tools:
+            raise ValueError("minimum tool evidence requires at least one registered tool")
         names = [tool.spec.name for tool in self.tools]
         if len(names) != len(set(names)):
             raise ValueError("agent tool names must be unique")
@@ -168,13 +177,23 @@ class ToolAgent:
                     answer = assistant.get("content")
                     if not isinstance(answer, str):
                         raise ProviderError("assistant returned no final text answer")
+                    if completed_calls < self.definition.min_tool_calls:
+                        return self._failure(
+                            request,
+                            "evidence_missing",
+                            f"agent requires at least {self.definition.min_tool_calls} successful registered tool call(s) before reporting success",
+                            diagnostics=diagnostics,
+                            usage=total_usage,
+                            steps=tracker.steps,
+                            tool_calls=completed_calls,
+                        )
                     status = AgentStatus.NEEDS_APPROVAL if denied_tool else AgentStatus.SUCCEEDED
                     return AgentResult(
                         request_id=request.request_id,
                         agent_id=request.agent_id,
                         status=status,
                         output={
-                            "answer": answer,
+                            "answer": redact(answer),
                             "tools_available": list(tool_names),
                             "tool_calls_executed": completed_calls,
                         },
