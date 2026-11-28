@@ -7,7 +7,6 @@ from typing import Any
 
 import pytest
 
-from toolixa_core.contracts.request import AgentRequest
 from toolixa_core.contracts.response import AgentStatus
 from toolixa_core.runtime.agent import AgentDefinition
 from toolixa_core.tools.base import ToolSpec
