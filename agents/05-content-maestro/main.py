@@ -5,13 +5,15 @@ from __future__ import annotations
 import argparse
 import json
 
-
 from toolixa_core.agent_runtime_cli import run_agent_cli
 from toolixa_core.agent_tools import (
-    ListWorkspaceFilesTool, ReadWorkspaceFileTool, SearchLocalDocsTool,
+    ListWorkspaceFilesTool,
+    ReadWorkspaceFileTool,
+    SearchLocalDocsTool,
     ValidateEditorialBriefTool,
 )
 from toolixa_core.runtime.agent import AgentDefinition
+
 
 def build_brief(
     topic: str, *, audience: str = "general", content_format: str = "article"
@@ -77,7 +79,6 @@ def main() -> None:
     )
 
 
-
 def build_agent() -> AgentDefinition:
     return AgentDefinition(
         id="content-maestro",
@@ -91,8 +92,12 @@ def build_agent() -> AgentDefinition:
             "does not fetch sources or prove factual accuracy. Clearly label unverified claims and never invent "
             "statistics, quotations, source reviews or current facts."
         ),
-        tools=(ListWorkspaceFilesTool(), ReadWorkspaceFileTool(), SearchLocalDocsTool(),
-               ValidateEditorialBriefTool()),
+        tools=(
+            ListWorkspaceFilesTool(),
+            ReadWorkspaceFileTool(),
+            SearchLocalDocsTool(),
+            ValidateEditorialBriefTool(),
+        ),
         min_tool_calls=1,
     )
 

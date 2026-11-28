@@ -8,12 +8,13 @@ import json
 import re
 from pathlib import Path
 
-from toolixa_core.memory.models import DocumentChunk
-
 from toolixa_core.agent_runtime_cli import run_agent_cli
 from toolixa_core.agent_tools import (
-    ListWorkspaceFilesTool, ReadWorkspaceFileTool, SearchLocalDocsTool,
+    ListWorkspaceFilesTool,
+    ReadWorkspaceFileTool,
+    SearchLocalDocsTool,
 )
+from toolixa_core.memory.models import DocumentChunk
 from toolixa_core.runtime.agent import AgentDefinition
 
 TOKEN = re.compile(r"[A-Za-z0-9_]{2,}")
@@ -121,7 +122,6 @@ def main() -> None:
             {"results": retrieve(chunks, args.query), "chunks_indexed": len(chunks)}, indent=2
         )
     )
-
 
 
 def build_agent() -> AgentDefinition:

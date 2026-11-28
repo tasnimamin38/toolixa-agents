@@ -9,8 +9,11 @@ from pathlib import Path
 
 from toolixa_core.agent_runtime_cli import run_agent_cli
 from toolixa_core.agent_tools import (
-    InspectPythonTool, ListWorkspaceFilesTool, ReadGitDiffTool,
-    ReadWorkspaceFileTool, SearchWorkspaceTool,
+    InspectPythonTool,
+    ListWorkspaceFilesTool,
+    ReadGitDiffTool,
+    ReadWorkspaceFileTool,
+    SearchWorkspaceTool,
 )
 from toolixa_core.runtime.agent import AgentDefinition
 
@@ -78,7 +81,6 @@ def main() -> None:
     print(json.dumps(analyze_workspace(args.workspace, max_files=args.max_files), indent=2))
 
 
-
 def build_agent() -> AgentDefinition:
     return AgentDefinition(
         id="dev-copilot",
@@ -91,8 +93,13 @@ def build_agent() -> AgentDefinition:
             "verification steps. Separate observed facts from hypotheses and cite repository-relative paths and "
             "line numbers. Never modify files, execute source, run commands or claim tests passed."
         ),
-        tools=(ListWorkspaceFilesTool(), ReadWorkspaceFileTool(), SearchWorkspaceTool(),
-               InspectPythonTool(), ReadGitDiffTool()),
+        tools=(
+            ListWorkspaceFilesTool(),
+            ReadWorkspaceFileTool(),
+            SearchWorkspaceTool(),
+            InspectPythonTool(),
+            ReadGitDiffTool(),
+        ),
         min_tool_calls=1,
     )
 

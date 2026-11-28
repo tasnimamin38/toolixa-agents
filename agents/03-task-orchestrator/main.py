@@ -7,10 +7,10 @@ import json
 from collections import deque
 from typing import Any
 
-
 from toolixa_core.agent_runtime_cli import run_agent_cli
 from toolixa_core.agent_tools import ValidateTaskGraphTool
 from toolixa_core.runtime.agent import AgentDefinition
+
 
 def order_tasks(tasks: list[dict[str, Any]], *, max_tasks: int = 100) -> list[str]:
     if len(tasks) > max_tasks:
@@ -71,7 +71,6 @@ def main() -> None:
         raise ValueError("input JSON must contain a tasks array")
     result = {"execution_order": order_tasks(payload["tasks"]), "mode": "plan-only"}
     print(json.dumps(result, indent=2))
-
 
 
 def build_agent() -> AgentDefinition:

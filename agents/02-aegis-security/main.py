@@ -137,7 +137,6 @@ def main() -> None:
     print(json.dumps(scan_workspace(args.workspace, max_files=args.max_files), indent=2))
 
 
-
 def build_agent() -> AgentDefinition:
     return AgentDefinition(
         id="aegis-security",
