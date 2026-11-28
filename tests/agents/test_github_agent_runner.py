@@ -50,9 +50,7 @@ class FakeClient:
                 ],
             }
             return {
-                "choices": [
-                    {"index": 0, "message": message, "finish_reason": "tool_calls"}
-                ],
+                "choices": [{"index": 0, "message": message, "finish_reason": "tool_calls"}],
                 "usage": {"prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15},
             }
         tool_message = next(item for item in kwargs["messages"] if item.get("role") == "tool")
@@ -74,8 +72,14 @@ class FakeClient:
 
 def test_remote_endpoint_requires_https_and_rejects_local_gateway():
     runner = load_runner()
-    assert runner.validate_remote_endpoint("https://api.example.com/v1") == "https://api.example.com/v1"
-    assert runner.validate_remote_endpoint("https://api.example.com/v1/") == "https://api.example.com/v1"
+    assert (
+        runner.validate_remote_endpoint("https://api.example.com/v1")
+        == "https://api.example.com/v1"
+    )
+    assert (
+        runner.validate_remote_endpoint("https://api.example.com/v1/")
+        == "https://api.example.com/v1"
+    )
     for value in (
         "http://api.example.com/v1",
         "http://127.0.0.1:20128/v1",
@@ -138,9 +142,7 @@ def test_runner_enforces_task_and_resource_budgets(tmp_path: Path):
     runner = load_runner()
     client = FakeClient("orchestration.validate_task_graph", {"tasks": [{"id": "a"}]})
     with pytest.raises(ValueError, match="characters"):
-        runner.run_registered_agent(
-            "task-orchestrator", "x" * 12_001, ROOT, client=client
-        )
+        runner.run_registered_agent("task-orchestrator", "x" * 12_001, ROOT, client=client)
     with pytest.raises(ValueError, match="max_steps"):
         runner.run_registered_agent(
             "task-orchestrator", "Plan safely.", ROOT, client=client, max_steps=26

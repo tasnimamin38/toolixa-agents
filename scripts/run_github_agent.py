@@ -37,7 +37,9 @@ def validate_remote_endpoint(value: str) -> str:
         or parsed.query
         or parsed.fragment
     ):
-        raise ValueError("GitHub-hosted runs require an HTTPS endpoint without embedded credentials")
+        raise ValueError(
+            "GitHub-hosted runs require an HTTPS endpoint without embedded credentials"
+        )
     hostname = parsed.hostname.rstrip(".").lower()
     if hostname == "localhost" or hostname.endswith((".localhost", ".local", ".internal")):
         raise ValueError("loopback and private hostnames cannot be used by GitHub-hosted runners")
@@ -88,10 +90,7 @@ def _load_registered_module(agent_id: str, root: Path) -> Any:
     manifest_path.relative_to(root)
     module_path.relative_to(root)
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if (
-        manifest.get("id") != agent_id
-        or manifest.get("entrypoint") != entrypoint.as_posix()
-    ):
+    if manifest.get("id") != agent_id or manifest.get("entrypoint") != entrypoint.as_posix():
         raise ValueError("agent manifest and catalog identity do not match")
     if not module_path.is_file():
         raise ValueError("registered agent entrypoint is missing")
@@ -125,15 +124,12 @@ def _permissions(definitions: tuple[AgentDefinition, ...]) -> frozenset[str]:
     unsupported = required - ALLOWED_PERMISSIONS
     if unsupported:
         raise ValueError(
-            "GitHub runner does not grant these capabilities: "
-            + ", ".join(sorted(unsupported))
+            "GitHub runner does not grant these capabilities: " + ", ".join(sorted(unsupported))
         )
     return frozenset(required)
 
 
-def build_registered_runtime(
-    agent_id: str, root: Path, client: Any
-) -> tuple[Any, frozenset[str]]:
+def build_registered_runtime(agent_id: str, root: Path, client: Any) -> tuple[Any, frozenset[str]]:
     """Load a catalogued agent and derive grants from its registered tools."""
     module = _load_registered_module(agent_id, root)
     if agent_id == EngineeringWorkflow.AGENT_ID:
@@ -198,8 +194,7 @@ def _safe_value(value: Any, secrets: tuple[str, ...]) -> Any:
         return [_safe_value(item, secrets) for item in value[:100]]
     if isinstance(value, dict):
         return {
-            str(key)[:100]: _safe_value(item, secrets)
-            for key, item in list(value.items())[:100]
+            str(key)[:100]: _safe_value(item, secrets) for key, item in list(value.items())[:100]
         }
     if value is None or isinstance(value, (int, float, bool)):
         return value
