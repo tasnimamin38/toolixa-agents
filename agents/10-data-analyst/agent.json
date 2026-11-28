@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "data-analyst",
+  "name": "Data Analyst",
+  "version": "0.1.0",
+  "category": "data",
+  "description": "Model-powered analysis of local CSV datasets using deterministic profiling for row counts, missingness, duplicates, column types and numeric summaries.",
+  "entrypoint": "main.py",
+  "python": ">=3.11",
+  "dependencies": [],
+  "capabilities": [
+    "csv_data_profiling",
+    "descriptive_statistics",
+    "missing_value_analysis",
+    "duplicate_detection",
+    "evidence_based_interpretation"
+  ],
+  "permissions": [
+    "workspace.read"
+  ],
+  "status": "experimental",
+  "documentation": "README.md"
+}

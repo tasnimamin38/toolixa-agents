@@ -126,6 +126,168 @@
       "path": "agents/06-web-scraper",
       "entrypoint": "main.py",
       "documentation": "README.md"
+    },
+    {
+      "id": "software-engineer",
+      "name": "Software Engineer",
+      "version": "0.1.0",
+      "category": "development",
+      "description": "Model-powered project engineering analysis using read-only workspace, Python AST and Git diff tools; proposes implementation plans without modifying files or executing code.",
+      "status": "experimental",
+      "capabilities": [
+        "project_architecture_analysis",
+        "codebase_navigation",
+        "python_ast_inspection",
+        "git_diff_review",
+        "implementation_planning"
+      ],
+      "permissions": [
+        "workspace.read"
+      ],
+      "dependencies": [],
+      "python": ">=3.11",
+      "path": "agents/07-software-engineer",
+      "entrypoint": "main.py",
+      "documentation": "README.md"
+    },
+    {
+      "id": "code-reviewer",
+      "name": "Code Reviewer",
+      "version": "0.1.0",
+      "category": "development",
+      "description": "Model-powered code review over the current Git diff and relevant source, with read-only Python AST analysis and prioritized evidence-backed findings.",
+      "status": "experimental",
+      "capabilities": [
+        "diff_review",
+        "risk_prioritization",
+        "python_static_review",
+        "test_gap_detection",
+        "security_review"
+      ],
+      "permissions": [
+        "workspace.read"
+      ],
+      "dependencies": [],
+      "python": ">=3.11",
+      "path": "agents/08-code-reviewer",
+      "entrypoint": "main.py",
+      "documentation": "README.md"
+    },
+    {
+      "id": "test-engineer",
+      "name": "Test Engineer",
+      "version": "0.1.0",
+      "category": "quality",
+      "description": "Model-powered test engineering that maps source modules to tests, inspects Python syntax and proposes concrete pytest scenarios without executing commands.",
+      "status": "experimental",
+      "capabilities": [
+        "test_gap_analysis",
+        "python_syntax_inspection",
+        "pytest_test_design",
+        "fixture_planning",
+        "regression_planning"
+      ],
+      "permissions": [
+        "workspace.read"
+      ],
+      "dependencies": [],
+      "python": ">=3.11",
+      "path": "agents/09-test-engineer",
+      "entrypoint": "main.py",
+      "documentation": "README.md"
+    },
+    {
+      "id": "data-analyst",
+      "name": "Data Analyst",
+      "version": "0.1.0",
+      "category": "data",
+      "description": "Model-powered analysis of local CSV datasets using deterministic profiling for row counts, missingness, duplicates, column types and numeric summaries.",
+      "status": "experimental",
+      "capabilities": [
+        "csv_data_profiling",
+        "descriptive_statistics",
+        "missing_value_analysis",
+        "duplicate_detection",
+        "evidence_based_interpretation"
+      ],
+      "permissions": [
+        "workspace.read"
+      ],
+      "dependencies": [],
+      "python": ">=3.11",
+      "path": "agents/10-data-analyst",
+      "entrypoint": "main.py",
+      "documentation": "README.md"
+    },
+    {
+      "id": "api-architect",
+      "name": "API Architect",
+      "version": "0.1.0",
+      "category": "engineering",
+      "description": "Model-powered API design and integration planning from local OpenAPI 3.x JSON contracts and project source files.",
+      "status": "experimental",
+      "capabilities": [
+        "openapi_contract_inspection",
+        "endpoint_inventory",
+        "schema_mapping",
+        "api_integration_planning",
+        "compatibility_analysis"
+      ],
+      "permissions": [
+        "workspace.read"
+      ],
+      "dependencies": [],
+      "python": ">=3.11",
+      "path": "agents/11-api-architect",
+      "entrypoint": "main.py",
+      "documentation": "README.md"
+    },
+    {
+      "id": "research-analyst",
+      "name": "Research Analyst",
+      "version": "0.1.0",
+      "category": "research",
+      "description": "Evidence-first local-document research that searches Markdown/text sources and synthesizes answers with exact file and line citations.",
+      "status": "experimental",
+      "capabilities": [
+        "local_document_search",
+        "source_line_citations",
+        "evidence_synthesis",
+        "contradiction_detection",
+        "research_gap_reporting"
+      ],
+      "permissions": [
+        "workspace.read"
+      ],
+      "dependencies": [],
+      "python": ">=3.11",
+      "path": "agents/12-research-analyst",
+      "entrypoint": "main.py",
+      "documentation": "README.md"
+    },
+    {
+      "id": "engineering-workflow",
+      "name": "Engineering Workflow Orchestrator",
+      "version": "0.1.0",
+      "category": "development",
+      "description": "Runs Software Engineer, Code Reviewer and Test Engineer sequentially through their real read-only tools, with evidence-backed handoffs and one shared execution budget.",
+      "status": "experimental",
+      "capabilities": [
+        "sequential_multi_agent_orchestration",
+        "engineering_analysis",
+        "independent_code_review",
+        "test_strategy_generation",
+        "evidence_backed_handoffs",
+        "shared_execution_budget"
+      ],
+      "permissions": [
+        "workspace.read"
+      ],
+      "dependencies": [],
+      "python": ">=3.11",
+      "path": "agents/13-engineering-workflow",
+      "entrypoint": "main.py",
+      "documentation": "README.md"
     }
   ]
 }

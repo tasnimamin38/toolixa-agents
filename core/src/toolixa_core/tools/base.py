@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol
 
@@ -14,10 +14,21 @@ class ToolSpec:
     name: str
     description: str
     required_permissions: tuple[str, ...] = ()
+    parameters: dict[str, Any] = field(
+        default_factory=lambda: {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": False,
+        }
+    )
 
     def __post_init__(self) -> None:
         if not self.name.strip():
             raise ValueError("tool name cannot be empty")
+        if not self.description.strip():
+            raise ValueError("tool description cannot be empty")
+        if self.parameters.get("type") != "object":
+            raise ValueError("tool parameters must describe a JSON object")
 
 
 @dataclass(frozen=True, slots=True)
