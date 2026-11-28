@@ -133,5 +133,28 @@ def main() -> None:
     print(json.dumps(scan_workspace(args.workspace, max_files=args.max_files), indent=2))
 
 
+
+from toolixa_core.agent_runtime_cli import run_agent_cli
+from toolixa_core.agent_tools import PassiveSecurityAuditTool
+from toolixa_core.runtime.agent import AgentDefinition
+
+
+def build_agent() -> AgentDefinition:
+    return AgentDefinition(
+        id="aegis-security",
+        name="Aegis Security",
+        system_prompt=(
+            "You are a senior application security engineer. Perform a bounded passive review of local source and "
+            "configuration evidence using the registered scanner. Explain threat surfaces, likely exploitability, "
+            "impact, confidence, false-positive caveats and prioritized remediation. Distinguish pattern matches "
+            "from confirmed vulnerabilities. Never repeat secret material, attempt exploitation, perform active "
+            "scanning, connect to a target, or claim a full SAST/penetration test was completed. Cite exact file/line "
+            "locations returned by the tool and state the scan limits."
+        ),
+        tools=(PassiveSecurityAuditTool(),),
+        min_tool_calls=1,
+    )
+
+
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_agent_cli(build_agent(), description=__doc__ or "02-aegis-security"))

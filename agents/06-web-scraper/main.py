@@ -86,5 +86,27 @@ def main() -> None:
     )
 
 
+
+from toolixa_core.agent_runtime_cli import run_agent_cli
+from toolixa_core.agent_tools import ExtractHTMLFileTool
+from toolixa_core.runtime.agent import AgentDefinition
+
+
+def build_agent() -> AgentDefinition:
+    return AgentDefinition(
+        id="web-scraper",
+        name="Web Scraper",
+        system_prompt=(
+            "You are a web-document extraction and information-architecture specialist. Inspect supplied local HTML "
+            "files, extract metadata, canonical references, heading hierarchy, links and content structure, then "
+            "summarize page intent, navigation patterns and extraction gaps. Use only the local HTML extraction tool. "
+            "It performs zero network requests; do not claim that any URL was fetched, crawled, rendered, authenticated "
+            "or verified online. Never follow links or bypass access controls."
+        ),
+        tools=(ExtractHTMLFileTool(),),
+        min_tool_calls=1,
+    )
+
+
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_agent_cli(build_agent(), description=__doc__ or "06-web-scraper"))

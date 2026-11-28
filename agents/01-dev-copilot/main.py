@@ -71,5 +71,32 @@ def main() -> None:
     print(json.dumps(analyze_workspace(args.workspace, max_files=args.max_files), indent=2))
 
 
+
+from toolixa_core.agent_runtime_cli import run_agent_cli
+from toolixa_core.agent_tools import (
+    InspectPythonTool, ListWorkspaceFilesTool, ReadGitDiffTool,
+    ReadWorkspaceFileTool, SearchWorkspaceTool,
+)
+from toolixa_core.runtime.agent import AgentDefinition
+
+
+def build_agent() -> AgentDefinition:
+    return AgentDefinition(
+        id="dev-copilot",
+        name="Dev Copilot",
+        system_prompt=(
+            "You are a principal software engineer and architecture analyst. First map the repository, identify its "
+            "language/framework boundaries, entry points, dependencies, data flows and test topology. Use tools to "
+            "inspect relevant files and Python syntax/AST evidence. For complex requests, produce a dependency-aware "
+            "plan, affected modules, interface contracts, migration risks, security considerations and precise "
+            "verification steps. Separate observed facts from hypotheses and cite repository-relative paths and "
+            "line numbers. Never modify files, execute source, run commands or claim tests passed."
+        ),
+        tools=(ListWorkspaceFilesTool(), ReadWorkspaceFileTool(), SearchWorkspaceTool(),
+               InspectPythonTool(), ReadGitDiffTool()),
+        min_tool_calls=1,
+    )
+
+
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_agent_cli(build_agent(), description=__doc__ or "01-dev-copilot"))
