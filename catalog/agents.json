@@ -5,14 +5,18 @@
     {
       "id": "dev-copilot",
       "name": "Dev Copilot",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "development",
-      "description": "Read-only Python workspace inventory and syntax analysis; never edits files or runs code.",
+      "description": "Model-driven principal engineering copilot for repository mapping, cross-file investigation, Python AST and module-dependency analysis, Git diff interpretation and evidence-backed implementation planning. Read-only; does not edit files, execute code or run tests.",
       "status": "experimental",
       "capabilities": [
-        "workspace_inventory",
-        "python_syntax_check",
-        "read_only_analysis"
+        "repository_inventory",
+        "cross_file_search",
+        "python_ast_inspection",
+        "python_module_dependency_graph",
+        "git_diff_analysis",
+        "implementation_planning",
+        "evidence_cited_findings"
       ],
       "permissions": [
         "workspace.read"
@@ -26,14 +30,17 @@
     {
       "id": "aegis-security",
       "name": "Aegis Security",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "security",
-      "description": "Local passive source inspection for potential hard-coded secrets and risky Python patterns.",
+      "description": "Model-driven passive application-security analyst combining bounded credential-pattern scans and Python AST rules for dynamic evaluation, unsafe deserialization, subprocess shell use, insecure temporary files, weak hashes and disabled TLS verification. Findings are location-based and redacted; this is not an active scanner or penetration test.",
       "status": "experimental",
       "capabilities": [
         "passive_secret_pattern_scan",
-        "python_risk_pattern_scan",
-        "redacted_findings"
+        "python_security_ast_analysis",
+        "unsafe_deserialization_detection",
+        "shell_execution_pattern_detection",
+        "tls_and_weak_hash_checks",
+        "redacted_location_based_findings"
       ],
       "permissions": [
         "workspace.read",
@@ -48,14 +55,18 @@
     {
       "id": "task-orchestrator",
       "name": "Task Orchestrator",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "orchestration",
-      "description": "Validates task dependencies and returns a deterministic execution order without launching sub-agents.",
+      "description": "Model-driven delivery architect that decomposes complex objectives, validates dependency DAGs, computes deterministic execution order, earliest/latest schedules, critical path, task slack and owner workload. It plans work but does not execute tasks or spawn agents.",
       "status": "experimental",
       "capabilities": [
-        "task_decomposition_input",
-        "dependency_validation",
-        "topological_ordering"
+        "complex_task_decomposition",
+        "dependency_graph_validation",
+        "cycle_and_missing_dependency_detection",
+        "critical_path_analysis",
+        "schedule_slack_calculation",
+        "owner_workload_analysis",
+        "execution_plan_generation"
       ],
       "permissions": [],
       "dependencies": [],
@@ -67,14 +78,17 @@
     {
       "id": "rag-chatbot",
       "name": "RAG Chatbot",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "knowledge",
-      "description": "Indexes local Markdown and text documents and retrieves passages with exact source line ranges.",
+      "description": "Evidence-grounded local knowledge agent that inventories and searches Markdown/text sources, retrieves bounded passages and synthesizes multi-part answers with source paths and line ranges. Current retrieval is lexical rather than embedding/vector retrieval; no web search or persistent vector index is claimed.",
       "status": "experimental",
       "capabilities": [
-        "local_text_ingestion",
-        "keyword_retrieval",
-        "source_line_citations"
+        "local_document_inventory",
+        "lexical_retrieval",
+        "multi_query_evidence_synthesis",
+        "source_line_citations",
+        "contradiction_and_gap_reporting",
+        "untrusted_context_handling"
       ],
       "permissions": [
         "workspace.read"
@@ -88,16 +102,21 @@
     {
       "id": "content-maestro",
       "name": "Content Maestro",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "content",
-      "description": "Creates structured editorial briefs with research questions and fact-check requirements, without fabricating research.",
+      "description": "Model-driven editorial strategist for audience-specific briefs, structured narrative outlines, factual-claim source coverage and timestamped script retention-beat analysis. It can assess supplied hook spacing and CTA coverage, but does not fetch sources or predict actual audience retention.",
       "status": "experimental",
       "capabilities": [
-        "content_brief",
-        "editorial_outline",
-        "fact_check_checklist"
+        "audience_aware_editorial_strategy",
+        "narrative_and_section_design",
+        "local_source_retrieval",
+        "factual_claim_reference_validation",
+        "script_timeline_validation",
+        "hook_spacing_and_cta_analysis"
       ],
-      "permissions": [],
+      "permissions": [
+        "workspace.read"
+      ],
       "dependencies": [],
       "python": ">=3.11",
       "path": "agents/05-content-maestro",
@@ -107,14 +126,17 @@
     {
       "id": "web-scraper",
       "name": "Web Scraper",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "web",
-      "description": "Extracts title, metadata, headings, and safe HTTP(S) or relative links from a supplied local HTML file.",
+      "description": "Static-site analysis agent for extracting metadata, canonical references, heading structure and links from supplied local HTML files, plus bounded multi-page crawling of an offline HTML snapshot with an internal link graph. It performs no remote HTTP requests or browser automation.",
       "status": "experimental",
       "capabilities": [
-        "local_html_parsing",
-        "metadata_extraction",
-        "link_extraction"
+        "local_html_metadata_extraction",
+        "heading_and_link_extraction",
+        "bounded_offline_site_crawl",
+        "internal_link_graph",
+        "external_link_boundary_detection",
+        "crawl_coverage_reporting"
       ],
       "permissions": [
         "workspace.read"
