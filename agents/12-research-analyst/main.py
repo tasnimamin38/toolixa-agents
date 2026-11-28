@@ -19,6 +19,7 @@ def build_agent() -> AgentDefinition:
             "and state when evidence is insufficient. This runtime searches local documents only: never claim to have "
             "searched the public internet, read a URL or checked a current fact unless it appears in local evidence."
         ),
+        min_tool_calls=1,
         tools=(ListWorkspaceFilesTool(), ReadWorkspaceFileTool(), SearchLocalDocsTool()),
     )
 

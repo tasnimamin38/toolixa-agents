@@ -19,6 +19,7 @@ def build_agent() -> AgentDefinition:
             "integration gaps, compatibility risks and a concrete implementation map. Explicitly flag absent details. "
             "Do not call endpoints, fetch remote URLs, modify files or claim an integration has been deployed."
         ),
+        min_tool_calls=1,
         tools=(ListWorkspaceFilesTool(), ReadWorkspaceFileTool(), InspectOpenAPITool()),
     )
 

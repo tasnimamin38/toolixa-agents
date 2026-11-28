@@ -21,6 +21,7 @@ def build_agent() -> AgentDefinition:
             "Give exact test commands but DO NOT execute tests or commands, write files or claim tests passed. "
             "Use only evidence from the workspace tools and cite file paths/line numbers."
         ),
+        min_tool_calls=1,
         tools=(
             ListWorkspaceFilesTool(),
             ReadWorkspaceFileTool(),

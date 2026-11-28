@@ -15,6 +15,7 @@ def build_agent() -> AgentDefinition:
             "and next analyses. Distinguish measured facts from hypotheses. Never invent measurements or imply "
             "raw rows were returned when only aggregates were provided. Do not modify data or create files."
         ),
+        min_tool_calls=1,
         tools=(ListWorkspaceFilesTool(), ReadWorkspaceFileTool(), ProfileCSVTool()),
     )
 
