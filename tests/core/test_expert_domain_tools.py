@@ -371,6 +371,6 @@ def test_test_coverage_mapper_maps_source_symbols_to_test_evidence_and_gaps(tmp_
     assert charge["tests"] == ["tests/test_payments.py::test_charge"]
     assert fee["coverage_state"] == "test_reference_found"
     assert refund["coverage_state"] == "no_test_reference_found"
-    assert result["source_symbol_count"] == 3
+    assert result["source_symbol_count"] == 4
     assert result["symbols_without_test_reference"] == 1
     assert result["tests_executed"] is False

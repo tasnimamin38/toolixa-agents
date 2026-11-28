@@ -173,8 +173,8 @@ class CompareCSVDatasetsTool:
         if (
             not isinstance(key_columns, list)
             or len(key_columns) > 5
-            or len(set(key_columns)) != len(key_columns)
             or any(not isinstance(name, str) or not name.strip() for name in key_columns)
+            or len(set(key_columns)) != len(key_columns)
         ):
             raise ValueError("key_columns must be a list of up to five unique column names")
         if any(name not in before_set or name not in after_set for name in key_columns):

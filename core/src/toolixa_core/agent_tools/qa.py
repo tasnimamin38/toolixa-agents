@@ -32,18 +32,15 @@ class _SourceSymbolVisitor(ast.NodeVisitor):
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         qualified = ".".join([*self.classes, node.name])
-        self.symbols.append(
-            {"symbol": qualified, "kind": "class", "line": node.lineno}
-        )
+        self.symbols.append({"symbol": qualified, "kind": "class", "line": node.lineno})
         self.classes.append(node.name)
         self.generic_visit(node)
         self.classes.pop()
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         qualified = ".".join([*self.classes, node.name])
-        self.symbols.append(
-            {"symbol": qualified, "kind": "function" if not self.classes else "method", "line": node.lineno}
-        )
+        kind = "method" if self.classes else "function"
+        self.symbols.append({"symbol": qualified, "kind": kind, "line": node.lineno})
         self.generic_visit(node)
 
     visit_AsyncFunctionDef = visit_FunctionDef
@@ -53,6 +50,8 @@ class _TestReferenceVisitor(ast.NodeVisitor):
     def __init__(self) -> None:
         self.current_class: list[str] = []
         self.tests: list[dict[str, Any]] = []
+        self.imported_modules: set[str] = set()
+        self.imported_names: set[str] = set()
         self._current_test: dict[str, Any] | None = None
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
@@ -61,20 +60,16 @@ class _TestReferenceVisitor(ast.NodeVisitor):
         self.current_class.pop()
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
-        is_test = node.name.startswith("test_") or (
-            self.current_class and self.current_class[-1].startswith("Test")
-        )
         previous = self._current_test
-        if is_test:
-            item = {
+        if node.name.startswith("test_"):
+            self._current_test = {
                 "name": node.name,
                 "qualified": ".".join([*self.current_class, node.name]),
                 "line": node.lineno,
-                "names": set(),
-                "modules": set(),
+                "names": set(self.imported_names),
+                "modules": set(self.imported_modules),
             }
-            self.tests.append(item)
-            self._current_test = item
+            self.tests.append(self._current_test)
         self.generic_visit(node)
         self._current_test = previous
 
@@ -90,16 +85,21 @@ class _TestReferenceVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_Import(self, node: ast.Import) -> None:
+        for alias in node.names:
+            self.imported_modules.add(alias.name)
+            self.imported_names.add(alias.asname or alias.name.split(".")[0])
         if self._current_test is not None:
-            for alias in node.names:
-                self._current_test["modules"].add(alias.name)
+            self._current_test["modules"].update(self.imported_modules)
+            self._current_test["names"].update(self.imported_names)
 
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
+        if node.module:
+            self.imported_modules.add(node.module)
+        for alias in node.names:
+            self.imported_names.add(alias.asname or alias.name)
         if self._current_test is not None:
-            if node.module:
-                self._current_test["modules"].add(node.module)
-                for alias in node.names:
-                    self._current_test["names"].add(alias.asname or alias.name)
+            self._current_test["modules"].update(self.imported_modules)
+            self._current_test["names"].update(self.imported_names)
 
 
 class MapPythonTestCoverageTool:
@@ -142,14 +142,21 @@ class MapPythonTestCoverageTool:
                 break
             scanned += 1
             try:
-                tree = ast.parse(path.read_text(encoding="utf-8"), filename=relative.as_posix())
+                tree = ast.parse(
+                    path.read_text(encoding="utf-8"), filename=relative.as_posix()
+                )
             except (OSError, UnicodeDecodeError):
                 continue
             except SyntaxError as exc:
                 parse_errors.append(
-                    {"path": relative.as_posix(), "line": exc.lineno, "message": exc.msg[:160]}
+                    {
+                        "path": relative.as_posix(),
+                        "line": exc.lineno,
+                        "message": exc.msg[:160],
+                    }
                 )
                 continue
+
             if _is_test_file(relative):
                 visitor = _TestReferenceVisitor()
                 visitor.visit(tree)
@@ -175,17 +182,13 @@ class MapPythonTestCoverageTool:
                         visitor.symbols,
                     )
 
-        source_path_index: dict[str, str] = {
-            path.rsplit("/", 1)[-1].removesuffix(".py"): module
-            for module, (path, _) in source_modules.items()
-        }
         symbols: list[dict[str, Any]] = []
         for module, (path, definitions) in sorted(source_modules.items()):
             for definition in definitions:
                 leaf = definition["symbol"].split(".")[-1]
                 references: list[str] = []
                 for record in test_records:
-                    imported_module_matches = (
+                    module_matches = (
                         module in record["modules"]
                         or any(module.startswith(item + ".") for item in record["modules"])
                         or any(item.startswith(module + ".") for item in record["modules"])
@@ -193,15 +196,14 @@ class MapPythonTestCoverageTool:
                     file_stem = Path(record["path"]).stem
                     inferred_module = file_stem.removeprefix("test_").removesuffix("_test")
                     filename_matches = inferred_module == Path(path).stem
-                    if not imported_module_matches and not filename_matches:
+                    if not module_matches and not filename_matches:
                         continue
                     names = record["names"]
-                    direct_symbol_reference = (
+                    if (
                         definition["symbol"] in names
                         or leaf in names
                         or record["name"].endswith(leaf)
-                    )
-                    if direct_symbol_reference:
+                    ):
                         references.append(f'{record["path"]}::{record["qualified"]}')
                 symbols.append(
                     {
@@ -221,7 +223,9 @@ class MapPythonTestCoverageTool:
             if truncated and len(symbols) >= max_symbols:
                 break
 
-        uncovered = sum(item["coverage_state"] == "no_test_reference_found" for item in symbols)
+        uncovered = sum(
+            item["coverage_state"] == "no_test_reference_found" for item in symbols
+        )
         return {
             "source_module_count": len(source_modules),
             "source_symbol_count": len(symbols),
