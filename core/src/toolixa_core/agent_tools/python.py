@@ -116,15 +116,17 @@ class AnalyzePythonModuleGraphTool:
         if not 1 <= maximum <= 500:
             raise ValueError("max_files must be between 1 and 500")
         candidates = []
+        truncated = False
         for path in sorted(root.rglob("*.py")):
             if path.is_symlink() or not path.is_file():
                 continue
             relative = path.relative_to(root)
             if is_excluded_path(relative) or path.stat().st_size > 200_000:
                 continue
-            candidates.append((relative, path))
             if len(candidates) >= maximum:
+                truncated = True
                 break
+            candidates.append((relative, path))
         modules = {
             self._module_name(relative): (relative, path)
             for relative, path in candidates
@@ -209,6 +211,6 @@ class AnalyzePythonModuleGraphTool:
             "cycle_count": len(cycles),
             "external_imports": sorted(external)[:200],
             "parse_errors": parse_errors[:100],
-            "truncated": len(candidates) >= maximum,
+            "truncated": truncated,
             "execution_performed": False,
         }

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from collections import deque
 import math
-import math
 from typing import Any
 
 from toolixa_core.tools.base import ToolCallContext, ToolSpec

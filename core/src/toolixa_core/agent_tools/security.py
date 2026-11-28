@@ -6,7 +6,8 @@ import ast
 import re
 from typing import Any
 
-from toolixa_core.agent_tools.workspace import is_excluded_path, workspace_root
+from toolixa_core.agent_tools.workspace import is_excluded_path, read_workspace_text, workspace_root
+from toolixa_core.logging import redact
 from toolixa_core.tools.base import ToolCallContext, ToolSpec
 
 _PATTERNS = (

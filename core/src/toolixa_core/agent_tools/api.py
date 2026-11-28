@@ -158,15 +158,17 @@ class CompareOpenAPIContractsTool:
             if new is None:
                 add("OPERATION_REMOVED", location, "An existing API operation was removed.")
                 continue
+            old_parameter_list = old.get("parameters", [])
+            new_parameter_list = new.get("parameters", [])
             old_params = {
                 (item.get("in", ""), item.get("name", "")): item
-                for item in old.get("parameters", [])
-                if isinstance(item, dict)
+                for item in old_parameter_list
+                if isinstance(old_parameter_list, list) and isinstance(item, dict)
             }
             new_params = {
                 (item.get("in", ""), item.get("name", "")): item
-                for item in new.get("parameters", [])
-                if isinstance(item, dict)
+                for item in new_parameter_list
+                if isinstance(new_parameter_list, list) and isinstance(item, dict)
             }
             for parameter_key, old_param in old_params.items():
                 label = location + " parameter " + str(parameter_key)
@@ -196,8 +198,10 @@ class CompareOpenAPIContractsTool:
                     for media in sorted(set(old_media) - set(new_media)):
                         add("REQUEST_MEDIA_TYPE_REMOVED", location + " " + media, "A previously accepted request media type was removed.")
 
-        old_schemas = before.get("components", {}).get("schemas", {})
-        new_schemas = after.get("components", {}).get("schemas", {})
+        before_components = before.get("components", {})
+        after_components = after.get("components", {})
+        old_schemas = before_components.get("schemas", {}) if isinstance(before_components, dict) else {}
+        new_schemas = after_components.get("schemas", {}) if isinstance(after_components, dict) else {}
         if not isinstance(old_schemas, dict):
             old_schemas = {}
         if not isinstance(new_schemas, dict):
@@ -221,8 +225,18 @@ class CompareOpenAPIContractsTool:
                         new_type = new_prop.get("type")
                         if old_type and new_type and old_type != new_type:
                             add("SCHEMA_PROPERTY_TYPE_CHANGED", location + "." + prop, "A schema property type changed.")
-                        old_enum = set(old_prop.get("enum", [])) if isinstance(old_prop.get("enum", []), list) else set()
-                        new_enum = set(new_prop.get("enum", [])) if isinstance(new_prop.get("enum", []), list) else set()
+                        old_enum_values = old_prop.get("enum", [])
+                        new_enum_values = new_prop.get("enum", [])
+                        old_enum = (
+                            {json.dumps(value, sort_keys=True) for value in old_enum_values}
+                            if isinstance(old_enum_values, list)
+                            else set()
+                        )
+                        new_enum = (
+                            {json.dumps(value, sort_keys=True) for value in new_enum_values}
+                            if isinstance(new_enum_values, list)
+                            else set()
+                        )
                         if old_enum and new_enum and old_enum - new_enum:
                             add("ENUM_VALUES_REMOVED", location + "." + prop, "One or more previously valid enum values were removed.")
             old_required = set(old_schema.get("required", [])) if isinstance(old_schema, dict) else set()

@@ -166,6 +166,7 @@ class CrawlLocalHTMLSiteTool:
         pages: list[dict[str, Any]] = []
         edges: list[dict[str, str]] = []
         external_links = 0
+        unavailable_links: list[str] = []
         truncated = False
         while queue:
             current_path, depth = queue.pop(0)
@@ -174,7 +175,13 @@ class CrawlLocalHTMLSiteTool:
             if len(pages) >= maximum:
                 truncated = True
                 break
-            relative, source = read_workspace_text(context, current_path, max_bytes=1_000_000)
+            try:
+                relative, source = read_workspace_text(
+                    context, current_path, max_bytes=1_000_000
+                )
+            except (OSError, ValueError, PermissionError):
+                unavailable_links.append(current_path)
+                continue
             parser = _DocumentParser(
                 "https://snapshot.invalid/" + relative.as_posix(),
                 200,
@@ -209,6 +216,7 @@ class CrawlLocalHTMLSiteTool:
             "pages_crawled": len(pages),
             "link_edges": edges[:500],
             "external_links_observed": external_links,
+            "unavailable_internal_paths": sorted(set(unavailable_links))[:100],
             "max_depth": max_depth,
             "truncated": truncated or bool(queue),
             "network_requests": 0,
