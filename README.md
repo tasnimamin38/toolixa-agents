@@ -42,7 +42,7 @@ Toolixa Agents is evolving from a static agent directory and Python starter SDK 
   <p><strong>Bounded tool-calling runtime · 13 agents · fixed engineering workflow · independent security review pending</strong></p>
 </div>
 
-**Important release distinction:** the original six-agent foundation and static directory are on `main`. The Local AI Gateway, shared model-driven tool runtime and six advanced specialists are in Draft [Pull Request #1](https://github.com/tasnimamin38/toolixa-agents/pull/1), branch `feature/python-local-ai-gateway`. The feature branch now includes a fixed three-stage Engineering Workflow Orchestrator in addition to the six specialist agents. The workflow is being validated on this branch; it has not been merged into `main` or deployed as a hosted backend. Independent security review remains pending.
+**Important release distinction:** the original six-agent foundation and static directory are on `main`. The Local AI Gateway, shared model-driven tool runtime and six advanced specialists are in Draft [Pull Request #1](https://github.com/tasnimamin38/toolixa-agents/pull/1), branch `feature/python-local-ai-gateway`. The feature branch now includes a fixed three-stage Engineering Workflow Orchestrator in addition to the six specialist agents. Implementation commit `3d4453e` passed local Windows/Python 3.11 regression checks, GitHub CI and Dependency Security. It remains in Draft PR #1 and has not been merged into `main` or deployed as a hosted backend. Independent security review remains pending.
 
 | Area | Current state |
 |---|---|

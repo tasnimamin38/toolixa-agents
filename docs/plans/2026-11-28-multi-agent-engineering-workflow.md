@@ -2,7 +2,7 @@
 
 > **For agentic workers:** Use the host's available task-by-task implementation workflow. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Status:** Local implementation and regression are complete on `feature/python-local-ai-gateway`; 90 tests pass locally. Final GitHub checks are pending for the next pushed commit.
+**Status:** Implementation commit `3d4453e` is pushed on `feature/python-local-ai-gateway`; 90 local tests pass and GitHub CI plus Dependency Security both passed for that commit. Independent security review remains pending.
 
 **Goal:** Add a real, bounded engineering workflow that coordinates the existing Software Engineer, Code Reviewer and Test Engineer in one sequential, evidence-backed task.
 
@@ -120,8 +120,8 @@
 ## Pending release checks
 
 - [x] Re-run the full local verification after the last CLI test addition; all 90 tests passed.
-- [ ] Commit and push to `feature/python-local-ai-gateway`; keep PR #1 in Draft.
-- [ ] Verify GitHub Actions CI and Dependency Security on the final pushed SHA.
+- [x] Commit and push implementation to `feature/python-local-ai-gateway` as `3d4453ec66c7334eb4d40cf7d5ecb310dd8b434c`; PR #1 remains Draft.
+- [x] Verify GitHub Actions CI (run `46151186105`) and Dependency Security (run `46151186111`) on that implementation commit; both passed.
 - [ ] Complete independent code/security review before changing this PR out of Draft or merging to main.
 
 ## Release gate
