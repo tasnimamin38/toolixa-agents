@@ -2,18 +2,21 @@
   "schema_version": 1,
   "id": "web-scraper",
   "name": "Web Scraper",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "category": "web",
-  "description": "Extracts title, metadata, headings, and safe HTTP(S) or relative links from a supplied local HTML file.",
+  "description": "Static-site analysis agent for extracting metadata, canonical references, heading structure and links from supplied local HTML files, plus bounded multi-page crawling of an offline HTML snapshot with an internal link graph. It performs no remote HTTP requests or browser automation.",
   "entrypoint": "main.py",
   "python": ">=3.11",
   "dependencies": [
     "beautifulsoup4>=4.12,<5"
   ],
   "capabilities": [
-    "local_html_parsing",
-    "metadata_extraction",
-    "link_extraction"
+    "local_html_metadata_extraction",
+    "heading_and_link_extraction",
+    "bounded_offline_site_crawl",
+    "internal_link_graph",
+    "external_link_boundary_detection",
+    "crawl_coverage_reporting"
   ],
   "permissions": [
     "workspace.read"

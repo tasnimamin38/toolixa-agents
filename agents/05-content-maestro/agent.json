@@ -2,18 +2,23 @@
   "schema_version": 1,
   "id": "content-maestro",
   "name": "Content Maestro",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "category": "content",
-  "description": "Creates structured editorial briefs with research questions and fact-check requirements, without fabricating research.",
+  "description": "Model-driven editorial strategist for audience-specific briefs, structured narrative outlines, factual-claim source coverage and timestamped script retention-beat analysis. It can assess supplied hook spacing and CTA coverage, but does not fetch sources or predict actual audience retention.",
   "entrypoint": "main.py",
   "python": ">=3.11",
   "dependencies": [],
   "capabilities": [
-    "content_brief",
-    "editorial_outline",
-    "fact_check_checklist"
+    "audience_aware_editorial_strategy",
+    "narrative_and_section_design",
+    "local_source_retrieval",
+    "factual_claim_reference_validation",
+    "script_timeline_validation",
+    "hook_spacing_and_cta_analysis"
   ],
-  "permissions": [],
+  "permissions": [
+    "workspace.read"
+  ],
   "status": "experimental",
   "documentation": "README.md"
 }
